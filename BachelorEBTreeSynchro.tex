@@ -1,0 +1,245 @@
+\documentclass[a4paper,11pt,oneside,%twoside to print on the back of pages
+headsepline,												% Linie für Kopfzeile
+footsepline,												% Linie für Fußzeile
+bibtotocnumbered									% numb point literaturverz in inhaltsverz => bibliography=tot ocnumbered
+]{scrreprt}
+%----------------------------------------------------------------------------------------------------------------------------------------------
+% STANDART LIBS
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}    % Deutsche Sprache in automatisch generiertem
+
+% DRUCKBEREICH: \areaset[BCOR]{textwidth}{textheight} %TODO understand
+% BCOR ist "Binding Correction", also wieviel Innenrand verloren geht
+% A4 hat 297mm x 210mm
+% wenn keine Marginalien, dann ist Breite 15cm vielleicht besser
+\areaset[1.5cm]{14cm}{25cm} 
+%% Die folgende Zeile sorgt dafür, daß die Fußnoten eingerückt werden,
+%% und zwar um 2em (class scrbook).
+\deffootnote{2em}{2em}{\textsuperscript{\normalfont\thefootnotemark} }
+
+%----------------------------------------------------------------------------------------------------------------------------------------------
+% ADDITIONAL LIBS
+
+% source code include
+\usepackage{listings} % -> %TODO use minted
+
+% Wrapping text around figures
+\usepackage{wrapfig}  %
+% containers for things that cannot be broken over a page -> example table, figure
+\usepackage{float}
+% provides many ways to customise the captions in floating environments
+\usepackage{caption} % http://www.ctex.org/documents/packages/float/caption.pdf
+% same for subfigues
+\usepackage{subcaption} % hint include subpicture
+
+%% Unterstützung für Graphiken und Farben
+\usepackage[pdftex]{graphicx}
+\usepackage[pdftex]{color}
+%\definecolor{DSblue}{rgb}{0,0,0.9}   % example defining a color
+
+% INDEX/GLOSSARY %TODO
+%Defines commands for use with MakeIndex
+%\usepackage{makeidx} % -> en.wikibooks.org/wiki/LaTeX/Indexing pctex.com/files/managed/3/3a/makeindx.pdf
+%\usepackage[xindy,toc]{glossaries}
+
+%BIBTEX
+%used by biblatex for qutes
+\usepackage[babel,german=quotes]{csquotes} % load after inputenc
+% cite package -> 1. pdflatex xx.tex 2. biber xx 3. pdflatex xx.tex
+\usepackage[style=reading,backend=biber]{biblatex} %TODO check diff cite styles
+% loads the bib file
+\addbibresource{bachelorBib.bib}
+
+
+% cross referencing and hyperrefs
+\usepackage[                % FIXME explain
+   pdftex,                  % Ausgabe-Medium: PDF
+   colorlinks=true,         % farbige Links in der Bildschirm-Version?
+   pdfstartview=Fit,       % wie soll Acrobat starten?
+   linkcolor=black,         % Farbe für Querverweise
+   citecolor=black,         % Farbe für Zitierungen
+   urlcolor=black,          % Farbe für Links
+   bookmarks=true
+   ]{hyperref}
+% non clickable URL   		
+\usepackage{url} %TODO remove if hyperref is better
+
+% TODO -> http://tex.stackexchange.com/questions/9796/how-to-add-todo-notes
+\usepackage{lipsum}                     % Dummytext
+\usepackage{xargs}                      % Use more than one optional parameter in a new commands
+\usepackage[pdftex,dvipsnames]{xcolor}  % Coloured text etc.
+% -> www.tex.ac.uk/ctan/macros/latex/contrib/todonotes/todonotes.pdf
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
+
+
+
+%----------------------------------------------------------------------------------------------------------------------------------------------
+% ADDITIONAL LIBS TO CHECK
+
+%linien in Tabellen
+\usepackage{booktabs}
+\usepackage{anysize}
+\usepackage[onehalfspacing]{setspace}
+
+
+% math for matrix and $$
+%\usepackage{amsmath}
+%\usepackage{amssymb}
+
+%\usepackage{lmodern}
+
+%\usepackage{multido}    % FIXME ???????????
+%\usepackage{everysel}   % FIXME ???????????
+ 
+%% besserer Flattersatz: \RaggedRight
+\usepackage{ragged2e}
+
+% from exposee
+\usepackage{latexsym}         % Fuer recht seltene Zeichen
+
+\usepackage[a4paper,lmargin={2.5cm},rmargin={2.5cm},tmargin={3cm},bmargin={2.5cm}]{geometry}
+\usepackage{enumerate}
+
+
+\pdfinfo{
+	/Title		(Synchronisation von Binärbaum-indexierten, verteilten InMemory-NoSQL-Datenbanken)
+	/Subject		(Bachelorarbeit)
+	/Author		(Paul Kitt)
+}
+%----------------------------------------------------------------------------------------------------------------------------------------------
+\begin{document}
+
+%TODO set 1,5 zeilenabstand , verdana, schriftgroesse 10
+%TODO style titelSeite -> check jonny -> richtliene
+%TODO check bewilligten title 
+\title{{\bf Bachelorarbeit:} \\ \begin{large}Synchronisation von Binärbaum-indexierten, verteilten
+InMemory-NoSQL-Datenbanken\end{large}}
+\author{
+	Paul Kitt \\
+	528516   \\	
+	paul.kitt@student.htw-berlin.de	\\
+\\
+\textbf{Studienort:}	\\
+	Hochschule für Technik und Wirtschaft Berlin \\
+	Angewandte Informatik (FB4) \\
+	\textbf{Betreuer:} \\
+	Prof. Dr.-Ing. Hendrik Gärtner, HTW Berlin \\
+	Jens-Peter Haack,  SpinningWheel GmbH
+}
+
+
+\maketitle
+\tableofcontents
+
+\chapter{Einleitung}
+\todo[inline]{Hintergrund, größerer Rahmen, kurze Aufgabenstellung}
+ 		\begin{enumerate}[1.]
+			\item  Problemstellung und Motivation
+			\item Zielsetzung
+			\item Rahmen und Aufbau der Arbeit
+		\end{enumerate}
+\chapter{Grundlagen}
+\todo[inline]{	theoretische Grundlagen, Beschreibung von Systemen(nur insoweit, als das diese Grundlagen und Beschreibungen unbedingt für das Verständnis erforderlich sind und nicht als bei studierten Informatikern vorausgesetzt werden kann)}
+
+	\begin{enumerate}[1.]
+			\item Grundlagen verwendeter Algorithmen
+			\begin{enumerate}[1.]
+			\item Binär Bäume
+			\item Elastische Binär Bäume
+			\end{enumerate}
+			\item Grundlagen Datenbanken
+			\begin{enumerate}[1.]
+			\item Baumbasierter Index
+			\end{enumerate}
+		\end{enumerate}
+\chapter{Anforderungsanalyse}
+\todo[inline]{	Bewertung von theoretischen Ansätzen, Konzepten, Methoden, Verfahren; informelle Aufgabenbeschreibung, klar formulierte Zielstellung  }
+\begin{enumerate}[1.]
+			\item Anwendungsumgebung
+			\item Anforderungen und Szenarios
+		\end{enumerate}
+
+
+\chapter{Konzept alias Definition/Entwurf}
+\todo[inline]{Definition: formale Darstellung der Anforderung mit Hilfe geeigneter Methoden}
+\todo[inline]{Entwurf: Diskussion von Lösungsansätzen, Modellierung der konzipierten Lösung}
+
+		\begin{enumerate}[1.]
+			\item Modellierung
+			\item Systemarchitektur
+		\end{enumerate}
+
+\chapter{Implementierung}
+\todo[inline]{Realisierung/Umsetzung, Beschreibung der Implementierung, nicht des Programmcodes}
+		\begin{enumerate}[1.]
+			\item Umsetzung der Systemarchitektur
+			\item Beschreibung und Besonderheiten der Implementierung
+		\end{enumerate}
+
+\chapter{Test}
+\todo[inline]{Testarten, Testkriterien, Testumgebung, Testergebnisse}
+		\begin{enumerate}[1.]
+			\item Testkriterien und Szenarien
+			\item Demonstration der Funktionalität
+			\item Auswertung der Ergebnisse
+		\end{enumerate}
+		
+\chapter{Fazit und Ausblick alias Ergebnis}
+\todo[inline]{Zusammenfassung, Bewertung der Ergebnisse, Vergleich mit der Zielstellung, Ausblick}
+
+
+
+
+
+
+
+
+
+\newpage
+\chapter{LaTex todo Test}
+
+\todo[inline]{The original todo note withouth changed colours.\newline Here's another line.}
+Durch neue technische Möglichkeiten, wie große Sensornetze zum erfassen von Messdaten, dem kommenden \glqq Internet der Dinge\grqq  oder neuen Anwendungsfeldern wie \glqq Social Media\grqq , fallen immer größer werdende Datenmengen an und es entstehen immer neue Ansprüche diese zu verarbeiten. Neue Datenbankkonzepte  wie \glqq NoSQL\grqq  oder dem auf \glqq MapReduce\grqq basierendem Hadoop und seine stetigen Weiterentwicklung versuchen neue Wege beim Speichern und Verarbeiten der \glqq Big Data\grqq zu gehen\unsure{Is this correct?}\unsure{I'm unsure about also!}. Grade der Bereich Mobilfunk stellt besondere Anforderungen. Neben dem Bedarf an sehr schnellen Zugriffszeiten beim Lesen und Schreiben muss eine sehr hohe Ausfallsicherheit und Verfügbarkeit gewährleistet werden\change{Change this!}. Zusätzlich ist es wünschenswert zur Verarbeitung der Daten möglichst frei und dynamisch seine Schlüssel wählen zu können\info{This can help me in chapter seven!}.\\
+Dabei stoßen sowohl alte SQL basierte als auch neue NoSQL basierte Datenbanksysteme an ihre Grenzen \autocite[preNote:siehe][Seite 1312:postNote]{Schlosser2011}.
+Ein weiteres, großes Problem vieler bereits existierender Datenbanksysteme ist die Synchronisation\cite[preNote:siehe][Seite 1312:postNote]{Schlosser2011}. So kommt es beispielsweise bei  Nokia Siemens Networks \glqq One-NDS\grqq, eines der marktführenden Produkte\footcite[preNote:siehe][Seite 1312:postNote]{Schlosser2011}, zu folgender Problemstellung. Veränderungen des Datenbank-Masters werden an den Slave weiter gereicht\improvement{This really needs to be improved!\newline\newline What was I thinking?!}. Fällt dieser aber aus, kann der Master seine Änderungen via \glqq journaling\grqq eine Zeit lang nachvollziehen und den Slave wieder aktualisieren. Fällt dieser zu lange aus, ist dies nicht mehr möglich und ein komplettes Backup muss übertragen werden. Dies darf allerdings nicht länger dauern als das \glqq Vollaufen\grqq des \glqq journalings\grqq des Masters\improvement[inline]{The following section needs to be rewritten!}.\\
+
+
+
+\newpage
+\listoftodos[Notes]
+
+\newpage
+\printbibheading
+\printbibliography[type=book,heading=subbibliography,title={Buch Quellen}]
+\printbibliography[nottype=book,heading=subbibliography,title={Andere Quellen}]
+%\printbibliography[keyword=major,heading=subbibliography,title={Major Sources}] -> add keywords via jabref in the bibFile
+%\printbibliography[keyword=minor,heading=subbibliography,title={Minor Sources}]
+
+\chapter{Verzeichnisse}
+\todo[inline]{Glossar, Abkürzungen, Abbildungen, Tabellen}
+
+\chapter{Anhang}
+\todo[inline]{technische Dokumentation, Benutzerhandbuch, Installationsbeschreibung}
+
+\newpage
+
+\hfil\\\\\\
+
+\begin{LARGE}
+\textbf{Eigenständigkeitserklärung}\\\\
+\end{LARGE} 
+Hiermit versichere ich, dass ich die vorliegende Bachelorarbeit selbstständig und nur
+unter Verwendung der angegebenen Quellen und Hilfsmittel verfasst habe. Die Arbeit
+wurde bisher in gleicher oder ähnlicher Form keiner anderen Prüfungsbehörde vorgelegt.\\\\\\
+
+\parbox{4cm}{\centering Berlin, 04.02.2014\hrule
+\strut \centering\footnotesize Ort, Datum} \hfill\parbox{4cm}{\hrule
+\strut \centering\footnotesize Unterschrift}
+
+\end{document}

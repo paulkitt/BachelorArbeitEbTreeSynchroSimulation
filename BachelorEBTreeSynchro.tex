@@ -21,8 +21,7 @@ bibtotocnumbered									% numb point literaturverz in inhaltsverz => bibliograp
 %----------------------------------------------------------------------------------------------------------------------------------------------
 % ADDITIONAL LIBS
 
-% source code include
-\usepackage{listings} % -> %TODO use minted
+
 
 % Wrapping text around figures
 \usepackage{wrapfig}  %
@@ -35,8 +34,10 @@ bibtotocnumbered									% numb point literaturverz in inhaltsverz => bibliograp
 
 %% Unterstützung für Graphiken und Farben
 \usepackage[pdftex]{graphicx}
-\usepackage[pdftex]{color}
+%\usepackage[pdftex]{color}
 %\definecolor{DSblue}{rgb}{0,0,0.9}   % example defining a color
+
+
 
 % INDEX/GLOSSARY %TODO
 %Defines commands for use with MakeIndex
@@ -82,6 +83,9 @@ bibtotocnumbered									% numb point literaturverz in inhaltsverz => bibliograp
 % tikz print graphs: http://www.texample.net/tikz/examples/
 % bytefield – Create illustrations for network protocol specifications
 
+% source code include
+\usepackage{listings} % -> %TODO use minted
+\usepackage{minted}
 
 %----------------------------------------------------------------------------------------------------------------------------------------------
 % ADDITIONAL LIBS TO CHECK
@@ -118,6 +122,7 @@ bibtotocnumbered									% numb point literaturverz in inhaltsverz => bibliograp
 	/Author		(Paul Kitt)
 }
 %----------------------------------------------------------------------------------------------------------------------------------------------
+\pagenumbering{roman}
 \begin{document}
 
 %TODO set 1,5 zeilenabstand , verdana, schriftgroesse 10
@@ -138,90 +143,79 @@ InMemory-NoSQL-Datenbanken\end{large}}
 	Jens-Peter Haack,  SpinningWheel GmbH
 }
 
-
-\maketitle
 \begin{titlepage}
 	\begin{center}
-	
 		\begin{figure}[!htb]
-		\minipage{0.5\textwidth}
-			\begin{center}
-		  		\includegraphics[width=0.5\textwidth]{bilder/htwLogo.jpeg}
-			\end{center}
-		\endminipage\hfill
-	\minipage{0.5\textwidth}
-		\begin{center}
-	 		\includegraphics[width=0.5\textwidth]{bilder/Spinning_O_Wheel-200.png}
-		\end{center}	
-		\endminipage
-	\end{figure}
+			\minipage{0.5\textwidth}
+				\begin{center}
+			  		\includegraphics[width=0.5\textwidth]{bilder/htwLogo.jpeg}
+				\end{center}
+			\endminipage\hfill
+		 	\minipage{0.5\textwidth}
+				\begin{center}
+			 		\includegraphics[width=0.5\textwidth]{bilder/Spinning_O_Wheel-200.png}
+				\end{center}	
+			\endminipage
+		\end{figure}
 	
-	 \vfill
-	 \HRule \\[0.4cm]
+		 \vfill
+		 \HRule \\[0.4cm]
 	    {\bfseries\Large
 	        \begin{LARGE}
 	        Bachelorarbeit:\\
 	        \end{LARGE} 
 	        Synchronisation von Binärbaum-indexierten, verteilten
-	InMemory-NoSQL-Datenbanken\\
+			InMemory-NoSQL-Datenbanken\\
 	    }    
-	\HRule \\[1.5cm]
-	 \vfill
+		\HRule \\[1.5cm]
+	 	\vfill
 	
 	% Author and supervisor
-	\begin{minipage}{0.4\textwidth}
-		\begin{flushleft} \large
-		\textbf{Author:}\\
-		Paul Kitt, 528516 \\
-		Angewandte Informatik (FB4) \\	
-		Hochschule für Technik und Wirtschaft Berlin\\
-		paul.kitt@student.htw-berlin.de	\\~\\
-		\textbf{Studienort:}	\\
-		Hochschule für Technik und Wirtschaft Berlin \\
-		Angewandte Informatik (FB4) \\
-		\end{flushleft}
-	\end{minipage}
-	\begin{minipage}{0.4\textwidth}
-		\begin{flushright} \large
-
-		\textbf{Betreuer:} \\
-		Prof. Dr.-Ing. Hendrik Gärtner, HTW Berlin \\
-		Jens-Peter Haack,  SpinningWheel GmbH
-		\end{flushright}
-	\end{minipage}
-	
-	
-	 \vfill
-	\HRule \\
-	%\begin{minipage}{0.4\textwidth}
-	%\begin{flushleft} \large
-	%Datum/Unterschrift des Betreuers
-	%\end{flushleft}
-	%\end{minipage}
-	\begin{minipage}{0.4\textwidth}
-		\begin{flushright} \large
-	Datum/Unterschrift des Studenten
-		\end{flushright}
-	\end{minipage}
-	
-	\vfill
-	{\large \today}
+		\begin{minipage}{0.4\textwidth}
+			\begin{flushleft} \large
+				\textbf{Author:}\\
+				Paul Kitt, 528516 \\
+				Angewandte Informatik (FB4) \\	
+				Hochschule für Technik und Wirtschaft Berlin\\
+				paul.kitt@student.htw-berlin.de	\\~\\
+				\textbf{Studienort:}	\\
+				Hochschule für Technik und Wirtschaft Berlin \\
+				Angewandte Informatik (FB4) \\
+			\end{flushleft}
+		\end{minipage}
+		\begin{minipage}{0.4\textwidth}
+			\begin{flushright} \large
+				\textbf{Betreuer:} \\
+				Prof. Dr.-Ing. Hendrik Gärtner, HTW Berlin \\
+				Jens-Peter Haack,  SpinningWheel GmbH
+			\end{flushright}
+		\end{minipage}	
+		\vfill
+		\HRule \\
+		\begin{minipage}{0.4\textwidth}
+			\begin{flushright} \large
+				Datum/Unterschrift des Studenten
+			\end{flushright}
+		\end{minipage}
+		\vfill
+		{\large \today}
 	\end{center}
-	% Bottom of the page
-	
 \end{titlepage}
 \tableofcontents
 \newpage
-\todo[inline]{table of table}
-\todo[inline]{table of listings}
+%\todo[inline]{table of table}
+%\todo[inline]{table of listings}
 Abkürzungsverzeichniss:\\
 \begin{acronym}[EB-Baum] % option laengest abk def einzuglänge
- \acro{EB-Baum}{Elastische Binär Baum}
- \acrodefplural{EB-Baum}[EB-Bäume]{Elastische Binär Bäume}
-
+ 	\acro{EB-Baum}{Elastische Binär Baum}
+ 	\acrodefplural{EB-Baum}[EB-Bäume]{Elastische Binär Bäume}
 \end{acronym}
+\renewcommand\listoflistingscaption{Verzeichnis aller Codebeispiele}
+\listoflistings
+
 	%---------------------------------------------------------------------------------------------------------------------------------------------------	
 \chapter{Einleitung}
+\pagenumbering{arabic}
 \todo[inline]{Hintergrund, größerer Rahmen, kurze Aufgabenstellung}
  		\begin{enumerate}[1.]
 			\item  Problemstellung und Motivation
@@ -234,7 +228,7 @@ Abkürzungsverzeichniss:\\
 	-> Aufgabenbeschreibung
 	-> Inhalt und Aufbau der Arbeit	
 		
-	%---------------------------------------------------------------------------------------------------------------------------------------------------			
+	%---------------------------------------------------------------------------------------------------------------------------------------------------	
 \chapter{Grundlagen}
 \todo[inline]{	theoretische Grundlagen, Beschreibung von Systemen(nur insoweit, als das diese Grundlagen und Beschreibungen unbedingt für das Verständnis erforderlich sind und nicht als bei studierten Informatikern vorausgesetzt werden kann)}
 
@@ -259,12 +253,13 @@ Abkürzungsverzeichniss:\\
 	\end{enumerate}
 
 \section{Elastische Binär Bäume}
+\label{sec:ebTreeGrundlagen}
 Bei den \enquote{Elastischen Binär Bäumen} handelt es sich um speziell optimierte Variante der \enquote{Binären Suchbäume}. Entwickelt wurden das Konzept von Willy Tarreau\autocite{Tarreau} im Rahmen einer Forschung zum Thema \enquote{Event-scheduling for user-space network applications} und eignen sich daher auch speziell für Betriebssystem Scheduler, bei welchen schnelles priorisieren nach Zeit oder Dringlichkeit wichtig ist. Daten die mit Binär- oder Ganzahlen, wie Integer oder Long, indexiert sind können in dieser wenig bekannten Datenstruktur sehr effizient verwaltet werden. Dabei ist der \enquote{\ac{EB-Baum}} sehr performant wenn es zu sehr vielen den, Baum verändernden, Operationen, wie: Einfügen, Ändern, Abfragen oder Löschen kommt.\unsure{wie richtig zitieren?}\\
 Einfügeoperationen und das Abfragen von Blättern wird in O(log n) bewältigt. Löschen in O(1).\\
 Als Ausgangskonzepte dienten bei seiner Entwicklung der \enquote{balanciertem Binär Baum}\unsure{mention red black tree} und des \enquote{Radix Baumes}. Da aber Operationen wie Löschen von Blättern bei einem \enquote{balanciertem Binär Baum} O(log n) kosten und der Baum aber gerade Operationen wie diese möglichst schnell bewältigen soll ein signifikanter Nachteil. Bei den \enquote{Radix Bäumen}, die sich laut dem Entwickler Willy Tarreau\autocite[Absatz Introduction]{Tarreau} im Bezug auf Geschwindigkeit sehr gut eigenen, wird aber im Betrieb das allocieren von Speicher und die damit verbundene \enquote{Garbage Collection} zum Perfomanceproblem.\\
 Daher ist der \ac{EB-Baum} eine hybride Form aus beiden um diese Mängel aus zu gleichen. Es handelt sich nicht um einen balancierten Baum, was in besonderen Fällen zu einer schlechteren Leistung als die eines \enquote{balanciertem Binär Baum} führt\unsure{mention example}. Die Blätter sind im Baum von links nach rechts aufsteigend, nach einer Binär- oder Ganzahl(e.g. Integer, Long) sortiert.\\
 Eine weitere Besonderheit des \ac{EB-Baum} ist dass seine maximale Höhe durch den Datentyp der Schlüssel bestimmt wird.
-So kann beispielsweise ein Baum dessen Schlüssel Werte des Datentypes \enquote{Long} sind maximal 64 Ebenen besitzen da der Datentyp aus 64 Bit besteht. Schlüssel werden durch die Abfolge ihrer Binären Repräsentation adressiert.
+So kann beispielsweise ein Baum dessen Schlüssel Werte des Datentypes \enquote{Long} sind maximal 64 Ebenen besitzen da der Datentyp aus 64 Bit besteht. Schlüssel werden durch die Abfolge ihrer Binären Repräsentation adressiert. Der Schlüssel dient hierbei wie eine Art binäre Karte. Begonnen am höchsten gesetzten Bits des Schlüssels und wird der Baum Knoten für Knoten durch laufen und an den Knoten bei einer Null links, bei einer Eins rechts abgebogen bis dass Blatt oder falls dieses nicht vorhanden das am naheliegendste gefunden ist
 
 \subsection{Besonderheiten des Baumes}
 Durch die besondere Beschaffenheit des Baumes lassen sich viele Operationen sehr leicht umsetzen wie:
@@ -302,7 +297,7 @@ gespeichert. \enquote{EB Knoten} bestehen aus zwei Teilen:
   \end{center}
  \caption{EB-Knotenelement}
 \end{wrapfigure}
-Die Aufgabe eines Blattes ist sehr simpel. Es dient nur dazu eingefügte Daten durch einen Pointer zuhalten. Dabei ist es mit einem Schlüssel adressiert und besitzt eine Referenz auf seinen Elternknoten, sowie auf seinen EB-Ursprungsknoten.\\
+Die Aufgabe eines Blattes ist sehr simpel. Es dient nur dazu eingefügte Daten durch einen Pointer zuhalten. Dabei ist es mit einem Schlüssel adressiert und besitzt eine Referenz auf seinen Elternknoten, sowie auf seinen EB-Ursprungsknoten\unsure{SPW fragen}.\\
 Ein jedes Knotenelement besteht aus einer Referenz auf sein höher liegenden Elternknoten, dem Ebenenbit \unsure{Darf ich das Bild benutzen?} und zwei Referenzen auf seine Kinderknoten. \\ Das Ebenenbit ist eine Zahl und repräsentiert binär die niedrigste Bitposition des Schlüssels über dem alle Bits gleich sind. Alle unter dem Knoten liegenden Schlüssel haben sich somit bis zu diesem Bit die gleich Bitfolge. Der dritte Teil des Knotens ist die Wurzel die aus zwei Referenzen besteht zu entweder weiteren Knoten oder/sowie Blättern verweist. Da es sich um einen binären Baum handelt repräsentiert je Referenz das linke Bit 0 oder das rechte 1. Nur auf Ebene 0, mit dies repräsentierendem Ebenenbit, kann der Knoten zwei Blätter als Wurzel besitzen, da der Schlüssel sich nur um einen Wert an der letzten, nullten Bitstelle unterscheiden kann.\\
 Auch wenn Knoten sich später verschieben können diese nie unterhalb des mit ihnen angefügtem Blattes oder in einen anderen Zweig des Baumes gelangen. Falls es erlaubt ist Duplikate einzufügen werden  Knoten mit negativen Ebenenbits versehen.\\
 Eine weitere Besonderheit hier ist dass die Wurzelreferenzen nie unbelegt sind. Nur die Wurzel des Wurzelknoten des Baumes ist hier eine Ausnahme. Wenn seine zwei Wurzeln auf \enquote{null} referenziert ist der Baum leer. Sobald der Baum befüllt wird wächst dieser an seiner linken/\enquote{0-Wurzel}. Die rechte Wurzel referenziert immer auf \enquote{null}. Dadurch lässt sich der der Wurzelknoten einfach erkennen.
@@ -325,7 +320,39 @@ Die enge Verknüpfung von Knoten und Blatt ist aber nicht zwingend notwendig. In
 		\end{enumerate}
 -> Vortrag
 
-Vorgehen:
+\section{Betriebliches Umfeld}
+Diese von mir verfasst Arbeit entstand in enger Kooperation mit der neue entstehenden Spinning Wheel GmbH. Das hier implementierte und getestete Datenbankteilkonzept ist ein kleiner Bestandteil eines großen Softwareprojektes mit dessen Entwicklung die Firma sich beschäftigt. So wurde ich mit Idee und Grundkonzept beauftragt und bei deren Umsetzung von Herrn Jens-Peter Haack und Gernot Sänger bei theoretischen Fragen unterstützt.\\
+Die Spinning Wheel GmbH befasst sich mit der Entwicklung neuer Softwarelösungen für das Backend von Mobilfunkinfrastruktur. Dabei steht das verarbeiten und speichern von Mobilfunksubscriberdaten durch neue technische Möglichkeiten im Vordergrund.
+
+\section{Thematische Abgrenzung}
+Die in dieser Arbeit beschriebenen, umgesetzten und getesteten Programmkomponenten sind ein kleiner Teil eines großen neuen, verteilten Datenbankkonzeptes der Spinning Wheel GmbH und beschränken sich auf das im Speicher halten von Daten zur Laufzeit, sowie die Synchronisation zwischen Datenbanken zum Ausgleich verpasster Änderungen.\\
+Alle weiteren Bestandteile einer Datenbank wie das Persistieren, Verarbeiten oder komplexe Abfragen der gespeicherten Daten sind nicht Teil dieser Arbeit und werden nicht oder nur am Rande behandelt.  
+
+\section{•}
+andere datenbanken synch probleme\\
+-> mysql cluster
+-> redis
+ziel:
+verschiedene datenbank zellen fuer load balancing
+baum indexe
+
+\section{Problemstellung}
+Redundaz in verschiedenen Datenbanken
+secundary key probs
+Datenbank offline anderer Stand \\
+Datenbanken auf beiden Seiten verschieden\\
+Packetverlust/verspätung
+
+
+\section{Zielstellung}
+Datenbanksystem aus mehreren redundanten Datenbanken mit einerfacher synchronisations Funktionalität
+
+-> simulation der spinning wheel datenbank
+-> gesamte Idee testen
+-> test wieviel sync ops bei welcher delay und fehlerrate
+Ziel ist es zu bestimmen wie viele SyncOps/s nötig um die Datenbanken unter einer Schranke an Unterschied bei bestimmter Last bei bestimmter Fehlerrate
+
+\section{Vorgehen}
 -> Eingrenzung auf wenige bestandteile der datenbank(halten uIDs, cID, synchro)
 -> Implementierung der Basis Klassen und Funktionalitaeten 
 -> Implementierung der Simulations und Evaluations elemente
@@ -337,14 +364,12 @@ Technisches Umfeld:
 Anforderungen:
 ?
 
-Testdesign:
+\section{Testdesign}
 -> Entwurf der Testdaten
 -> Testdesign -> test eines use cases
 -> Unittests: grobe Funktionstests 
 
-\section{Zielstellung}
--> gesamte Idee testen
--> test wieviel sync ops bei welcher delay und fehlerrate
+
 %---------------------------------------------------------------------------------------------------------------------------------------------------
 \chapter{Konzept alias Definition/Entwurf}
 \todo[inline]{Definition: formale Darstellung der Anforderung mit Hilfe geeigneter Methoden}
@@ -354,28 +379,72 @@ Testdesign:
 			\item Modellierung
 			\item Systemarchitektur
 		\end{enumerate}
-\section{Gesamtaufbau?}
-
-aufteilung komponenten und simulations
-\subsection{Programmkomponenten}
- alle grob beschreiben
-synchro
-
-
-
-
-
-
-\subsection{Simulationskomponenten}	
--> master
--> Kommunikationslayer
--> tree compare: als klasse, nachrichten implementation	
 		
-\section{Synchronisation}
+\section{Konzept des Datenbanksystem}
+Ziel des
+mehrer redundante räumlich getrennte mit dem internet verbundene von einander unabhängige Datenbanken
+uml: Komponenten diagramm
+Wo beschreibung der gundlegenden funktionen
+grundlegende konzept mehrer Datenbanken mit gleichen Daten -> bedarf von synchronisation
+
+\section{Konzept der Datenbank}
+Die Grundlegende Idee der Datenbank ist, nicht wie in relationalen Datenbanken Daten durch Tabellen zu gruppieren, sondern durch viele verschiedene Indexe Daten je nach benötigten Kriterien  zugänglich zu machen. So kann jederzeit durch bilden von neuen Indexen auf neue Anforderungen an die Datenbank reagiert werden.
+
+Neue Datensätze erhalten bei ihrer zentralen Erzeugung im \enquote{Access Layer} eine eindeutige, aufsteigende, Identifikationsnummer. Die Nummer ist in allen Datenbanken gleich, verändert sich nie und adressiert den Datensatz bis dieser gelöscht wird. Eine weitere Nummer, die \enquote{Change ID}, symbolisiert den Stand des Datums. Wenn das Datum angelegt wird sind Identifikationsnummer und \enquote{Change ID} identisch. Wird der Datensatz verändert wird diesem immer größer werden \enquote{Change ID} zu gewiesen. Somit lässt sich leicht erkennen ob Daten verändert wurden oder noch in ihrem Ursprungszustand sind. Besonders praktisch ist diese beim Vergleichen von einem Datensatz in unterschiedlichen Datenbanken. Durch vergleichen der \enquote{Change ID} kann so sehr schnell ermittelt werden welche von Beiden aktueller ist und der Unterschied ausgeglichen werden.
+
+Für die Identifikationsnummer als auch \enquote{Change ID} wird eine eigener Index gepflegt. Hierfür eignet sich besonders gut der in \autoref{sec:ebTreeGrundlagen} beschriebene \ac{EB-Baum} da dieser auf das nach Größe sortiertem Verwalten von Ganzzahlartigen Schlüsseln optimiert ist. 
+
+
+
+
+
+
+
+\section{Synchronisation zwischen Datenbanken}
+\label{sec:eBTreeSynchronisation}
+Uml: sequence or communikation diagramm
+Durch ein Vergleichen der Identifikationsnummer und \enquote{Change IDs} der Datensätze in den sich synchronisierenden Datenbank kann einfach festgestellt werden welche Daten fehlen und falls diese vorhanden auf welcher Seite diese aktueller ist. Ein Vergleichen der gesamten Datenbanken, gerade wenn diese unter hoher Last stehen und sehr viele Datensätze verwalten, verbraucht viele Ressourcen. Außerdem ist dies ab einem gewissen Grad von Last und Masse an Daten nicht mehr möglich. Ein komplettes Abgleichen nimmt in diesem Fall so viel Zeit in Anspruch dass durch neue Operationen wieder ein Ungleichgewicht zwischen den Datenbanken entstehen würde.
+
+Daher gilt es eine Synchronisationsmethodik zu finden die zum einen schnell kleine Unterschiede als auch in einer längeren Zeitspanne Datenbanken die sich auf völlig verschiedenen Ständen befinden auszugleichen.
+Die \enquote{Change IDs}, die zum Vergleich während der Synchronisation gepflegt werden, werden in jeder Datenbank in einem \ac{EB-Baum} gehalten. Ein Vergleichen von Zweigen unterhalb jedes Knotens ist daher von großem Vorteil. Um dies Möglich zu machen wird für jeden Knoten eine den Zustand seiner beiden Kindobjekte repräsentierende Nummer, die \enquote{Node State ID}, errechnet. Dazu werden die Nummern der Kindobjekte, \enquote{Change IDs} falls das Kind ein Blatt oder \enquote{Node State ID} falls das Kind ein Knoten ist, durch eine binäre Oderoperation verbunden.
+ 
+
 -> ping synchronisation vs komplett check?
 -> delta
 -> addressierung des deltas via binärzahl
 -> suche nach linkestem unterschied ...
+
+-> finden von lost inserts und lost updates		
+	
+\section{Architektur des Prototypen}
+uml\\ package diagram komponenten diagram
+aufteilung komponenten und simulations\\
+
+Der in dieser Arbeit umgesetzte Teil des Datenbankkonzeptes besteht\\
+Der in dieser Arbeit erstellte Prototyp besteht grundlegend aus zwei Teilen. Zum einen den Komponenten der grundlegenden Funktionen des hier implementierten Datenbankprototypen und der Synchronisation zwischen zwei Instanzen der Datenbank. Zum anderen einer Simulationsumgebung mit welcher die Synchronisation zwischen den Datenbanken in verschiedenen Szenarios beeinflusst und die Leistung getestet werden kann. \\
+Teil der Applikation ist einem Actorsystem in dem jede Datenbank durch einen Aktor repräsentiert wird.
+Das Senden von Actornachrichten zwischen den Datenbanksystem ähnelt dem Senden von TCP/IP-Paketen zwischen zwei Datenbanken an verschiedenen Standorten. Wann welche Nachricht und in welcher Reihenfolge bei welcher Datenbank ankommt ist nicht vorhersehbar. Verlust oder Verspätung von Paketen und die daraus resultierende Ungleichheit der Datenbanken lassen sich so gut simulieren.
+Jeden Datenbank wird durch einen Actor repräsentiert und kann Nachrichten mit neuen Daten, Änderungen oder Synchronisationsanfragen erhalten und senden. Zwischen den Datenbankaktoren befindet sich, als Teil der Simulationsumgebung, ein Kommunikationsebene. In dieser können  Verlust und Verspätung von Paketen gesteuert werden.
+
+
+
+
+\subsection{Datenbankkomponenten}
+access layer
+baeme
+datenbankactor
+
+\subsection{Simulationskomponenten}	
+\subsubsection{Simulationsmaster}
+\subsubsection{Kommunikationslayer}
+
+-> tree compare: als klasse, nachrichten implementation	
+		
+\subsection{Simulation}
+clock
+aufbau des ganzen system
+tree diff
+auswertung
 %---------------------------------------------------------------------------------------------------------------------------------------------------
 \chapter{Implementierung}
 \todo[inline]{Realisierung/Umsetzung, Beschreibung der Implementierung, nicht des Programmcodes}
@@ -385,25 +454,78 @@ synchro
 		\end{enumerate}
 
 \section{EBTree} % teil gurndlage teil implementation
--> Scala implementierung Aufbauend auf einer spinning wheel optimierten java implementation
--> implementierung ohne verbindung von node und leaf
--> unique keys
--> erweiterung von
--> immer sortiert , Elemente werden nach einem Wert hier cID und uID eingefügt und automatisch nach rechts aufsteigend sortiert
-binaerlogik beschreiben
+Die im Rahmen dieser Arbeit erstellte Scalaimplementierung des \enquote{Elastischen Binär Baums} orientiert sich zum einen an dem in Grundlagen~\ref{sec:ebTreeGrundlagen} beschriebenen Entwurf von Willy Tarreau\autocite{Tarreau}, als auch auf einer mehr spezifischen Basisumsetzung der Spinning Wheel GmbH.\\
+In dieser wird bereits die enge Koppelung von Knoten und Blättern, der ursprünglichen C Implementation, aufgebrochen.\unsure{SPW c umsetzung mit blatt+node pointerns?}Die zuvor in \enquote{C structs} aufgebauten Knoten und Blätter wurden durch Java Klassen ersetzt und ihre gemeinsame Eigenschaften in einem Interface definiert. Basisfunktionen des Baumes wie einfügen, löschen und durchlaufen des Baumes waren hier ebenfalls vorhanden und wurden als Teil der Arbeit in Scala neu umgesetzt.\\\\
+Eine besondere Anforderung an den Baum ist das die sortiert, verwalteten Schlüssel einzigartig sind und ein Einfügen von Duplikaten verhindert wird. Da das Verwalten von Duplikaten an sich möglich ist aber für das Funktionieren des Baumes nicht zwingend nötig wird ein einfügen dieser, bei der folgend beschrieben Umsetzung, vermieden. \\
+\subsection{Grundlegender Aufbau}
+Der Baum selbst ist einer eigenen, generischen Klasse umgesetzt. Diese besteht aus den Funktionalitäten des Baumes, zwei \enquote{Case-Klassen}, repräsentativ für Knoten und Blätter, sowie einem \enquote{Trait} der deren gemeinsame Eigenschaften beschreibt. Der generische Typ der Klasse wird bei deren Instanziierung übergeben und legt den Datentyp der in den Blättern gespeicherten Daten fest. Somit kann der Baum jeder Art von Daten halten ohne verändert werden zu müssen.\\
+Der \enquote{Trait} Child beschreibt was dass \enquote{Kind} eines Knoten können muss. Ganz gleich ob es sich hier um ein Blatt oder einen weiteren, einen neuen Zweig öffnenden, Knoten handelt. Festgelegt ist das ein jedes \enquote{Kindobjekt} eine Referenz auf ein \enquote{Elternobekt} haben muss und eine Methode die die eindeutig identifizierbare ID des Objektes zurück gibt. Die ID ist bei Blättern der Schlüssel mit dem das Blatt eingefügt wird und bei Knoten die \enquote{NodeStateID} welche zum vergleichen von Baumzweigen anderer Datenbanken bei der Synchronisation verwendet wird.\\
+Durch den Einsatz von \enquote{Case-Klassen} kann durch \enquote{Pattern Matching} beim durchlaufen des Baumes sehr einfach geprüft werden welcher Klasse Kindelemente angehören und diese verarbeitet werden.\\
+Die Aufgabe des Blatt \enquote{Case Klasse} ist sehr einfach. Sie hält die Referenz auf einen übergeben Datensatz und ist durch einen eindeutige Schlüssel identifizierbar. Knoten hingegen verfügen über mehr Logik. So kann dieser die in seiner Wurzel gespeicherten Kindobjekte, weitere Zweige oder Blätter, zurück geben oder neue anfügen. Durch sein Ebenenbit weiß ein Knoten auf welcher binären Ebene des Baumes er steht und kann in dem, bei einer Abfrage- oder Einfügeoperation, übergebenen Schlüssel an der entsprechenden Stelle nachschauen und seinen linkes oder rechtes Kindobjekt verarbeiten.
 
-basis operationen:
--> einfügen eines Elementes via binär logik
+\begin{listing}[H]
+	\begin{minted}[mathescape,
+	               numbersep=5pt,
+	               frame=lines,
+	               framesep=1mm]{scala}
+case class Node[T](myBit: Int) extends Child[T] {
+    var myZero:     Child[T]  = _
+    var myOne:      Child[T]  = _
+    var nodeStateID:Long     = _
+
+    def bitOne(uid: Long): Boolean = ((uid & (1L << myBit)) != 0) && (myBit < 64)
+
+    def getChild(uid: Long): Child[T] = bitOne(uid) match {
+      case true => myOne;
+      case false => myZero
+    }
+    def setChild(uid: Long, child: Child[T]) = {
+      bitOne(uid) match {
+        case true => myOne = child
+        case false => myZero = child
+      }
+      child.myParent = this
+    }
+    override def getID(): Long = nodeStateID
+  }	
+	\end{minted}
+	\caption{Umsetzung eines Knoten des \ac{EB-Baum}}
+	\label{lst:Knoten EB-Baum}
+\end{listing}
+
+-> klassen bild\\
+\subsection{Funktionalität des Baumes}
+\subsubsection{Finden von Schlüsseln}
+Die Suche eines Schlüssel ist durch schlanke rekursive Funktion gelöst. Der zu suchende Schlüssel gibt einen Art binären Weg vor. So beginnt die Funktion am ersten Knoten des Baumes. Diesem wird der zu suchende Schlüssel übergeben. Der Knoten weiß durch sein Ebenenbit welche Stelle er in binären Repräsentation des Schlüssels ein nimmt. Je nach dem ob das Bit an dieser Stelle 0 oder 1 ist gibt er sein linkes oder rechtes Kindobjekt zurück. Nun kann via \enquote{Pattern Matching} unterschieden werden ob es sich bei diesem um einen weiteren Knoten handelt oder ein Blatt handelt. Ist das gefundene Objekt ein Blatt wird die Rekursion abgebrochen und das Blatt zurück gegeben. Falls ein Blatt mit dem gesuchten Schlüssel im Baum vorhanden ist wird dieses oder das Blatt mit am dem nächst kleinerem Schlüssel beim durch laufen des Rekursion gefunden. Falls das gefundene Objekt aber ein, einen weiterer einen neuen Zweig öffnenden, Knoten ist wird mit diesem die rekursive Funktion erneut aufgerufen bis ein Blatt gefunden wird.
+\subsubsection{Einfügen eines neuen Datensatzes}
+Beim einfügen eines neuen Blatt wird zunächst der Baum nach seinem Schlüssel durchsucht. Falls der Schlüssel bereits vorhanden ist wird der neuen Datensatz im gefundenen Blatt eingefügt und der Alte zurück gegeben. So wird verhindert das Duplikate eingefügt werden können. Falls der Schlüssel nicht vorhanden ist und sich bereits Blätter im Baum befinden wird zu nächst das Blatt gefunden dessen Schlüssel die ähnlichste binäre Repräsentation besitzt. Nun werden die Schlüssel des neuen und des gefundenem Blattes durch eine binäre Oder-Operation verknüpft und  die Bitstelle des höchsten Bitunterschiedes ermittelt. Diese wird das neue Ebenenbit des Knoten der mit dem Blatt eingefügt wird. Nun muss die passende Ebene im bereits durch die Suche ermittelten Zweiges gefunden werden. Dazu wird das Ebenenbit des Elternknoten des gefundenen Blattes mit dem neue bestimmten Ebenenbit verglichen ist das Neue kleiner wurde die richtige Ebene gefunden andernfalls wird der Zweig Knoten für Knoten nach oben durchlaufen bis die passende Stelle gefunden ist. An dieser kann der neue Knoten samt Blatt eingehängt werden. Das Durchlaufen dieses Algorithmus stellt sicher das ein neuer Schlüssel stets an der richtigen Stelle eingefügt wird und der Baum aufsteigend von links nach rechts sortiert ist.
+
+\subsubsection{Erzeugen von Knoten Status IDs}
+Das vergleichen von Blättern ist durch deren einzigartige, aufsteigenden Schlüssel einfach um zu setzen. Bei dem, in dieser Arbeit umgesetzten, Synchronisationansatz, ~\autoref{sec:eBTreeSynchronisation}, muss es aber möglich sein ganze Zweige unterhalb eines Knotens zu vergleichen. Daher besitzt der Baum eine Funktion die es ermöglicht für jeden Knoten eine Nummer, die \enquote{Knoten Status ID}, zu erzeugen die den Zustand seiner beiden Kinder repräsentiert.\\
+Wird ein Blatt angefügt oder gelöscht werden die \enquote{Knoten Status ID} rekursiv nach oben bis zur Wurzel generiert. Hierfür werden die IDs seiner Kindobjekte einfach durch eine binäre Oder-Operation verknüpft. Ist das Kindobjekt ein Blatt wird als ID der Schlüssel verwendet. Ist das Objekt ein Knoten seine bereits berechnete \enquote{Knoten Status ID}. 
+
+\subsubsection{Methoden zur Synchronisation}
+
+\subsubsection{Durchlaufen des Baumes}
+
+\subsubsection{Weitere Funktionen des Baumes}
 -> aendern eines elementes 
 -> entfernen eines elementes
 
-erweiterung des bauems um node state ids
--> deren berechnung
 
-\subsubsection{TreeActor}
+-> immer sortiert , Elemente werden nach einem Wert hier cID und uID eingefügt und automatisch nach rechts aufsteigend sortiert
+binaerlogik beschreiben
+
+
+
+
+	\section{TreeActor}
 -> haelt 2 bäume für uID udn cID
 
-\subsubsection{Acceslayer}
+\section{Acceslayer}
+
+\section{Vergleichen von Bäumen}
+
 %---------------------------------------------------------------------------------------------------------------------------------------------------
 \chapter{Test}
 \todo[inline]{Testarten, Testkriterien, Testumgebung, Testergebnisse}
@@ -415,23 +537,6 @@ erweiterung des bauems um node state ids
 %---------------------------------------------------------------------------------------------------------------------------------------------------		
 \chapter{Fazit und Ausblick alias Ergebnis}
 \todo[inline]{Zusammenfassung, Bewertung der Ergebnisse, Vergleich mit der Zielstellung, Ausblick}
-
-
-
-
-
-
-
-
-
-\newpage
-\chapter{LaTex todo Test}
-
-\todo[inline]{The original todo note withouth changed colours.\newline Here's another line.}
-Durch neue technische Möglichkeiten, wie große Sensornetze zum erfassen von Messdaten, dem kommenden \glqq Internet der Dinge\grqq  oder neuen Anwendungsfeldern wie \glqq Social Media\grqq , fallen immer größer werdende Datenmengen an und es entstehen immer neue Ansprüche diese zu verarbeiten. Neue Datenbankkonzepte  wie \glqq NoSQL\grqq  oder dem auf \glqq MapReduce\grqq basierendem Hadoop und seine stetigen Weiterentwicklung versuchen neue Wege beim Speichern und Verarbeiten der \glqq Big Data\grqq zu gehen\unsure{Is this correct?}\unsure{I'm unsure about also!}. Grade der Bereich Mobilfunk stellt besondere Anforderungen. Neben dem Bedarf an sehr schnellen Zugriffszeiten beim Lesen und Schreiben muss eine sehr hohe Ausfallsicherheit und Verfügbarkeit gewährleistet werden\change{Change this!}. Zusätzlich ist es wünschenswert zur Verarbeitung der Daten möglichst frei und dynamisch seine Schlüssel wählen zu können\info{This can help me in chapter seven!}.\\
-Dabei stoßen sowohl alte SQL basierte als auch neue NoSQL basierte Datenbanksysteme an ihre Grenzen \autocite[preNote:siehe][Seite 1312:postNote]{Schlosser2011}.
-Ein weiteres, großes Problem vieler bereits existierender Datenbanksysteme ist die Synchronisation\cite[preNote:siehe][Seite 1312:postNote]{Schlosser2011}. So kommt es beispielsweise bei  Nokia Siemens Networks \glqq One-NDS\grqq, eines der marktführenden Produkte\footcite[preNote:siehe][Seite 1312:postNote]{Schlosser2011}, zu folgender Problemstellung. Veränderungen des Datenbank-Masters werden an den Slave weiter gereicht\improvement{This really needs to be improved!\newline\newline What was I thinking?!}. Fällt dieser aber aus, kann der Master seine Änderungen via \glqq journaling\grqq eine Zeit lang nachvollziehen und den Slave wieder aktualisieren. Fällt dieser zu lange aus, ist dies nicht mehr möglich und ein komplettes Backup muss übertragen werden. Dies darf allerdings nicht länger dauern als das \glqq Vollaufen\grqq des \glqq journalings\grqq des Masters\improvement[inline]{The following section needs to be rewritten!}.\\
-
 
 
 \newpage
@@ -466,3 +571,4 @@ wurde bisher in gleicher oder ähnlicher Form keiner anderen Prüfungsbehörde v
 \strut \centering\footnotesize Unterschrift}
 
 \end{document}
+%EINFACH MACHEN!

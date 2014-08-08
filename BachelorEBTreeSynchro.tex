@@ -256,8 +256,11 @@ Abkürzungsverzeichniss:\\
 \label{sec:ebTreeGrundlagen}
 Bei den \enquote{Elastischen Binär Bäumen} handelt es sich um speziell optimierte Variante der \enquote{Binären Suchbäume}. Entwickelt wurden das Konzept von Willy Tarreau\autocite{Tarreau} im Rahmen einer Forschung zum Thema \enquote{Event-scheduling for user-space network applications} und eignen sich daher auch speziell für Betriebssystem Scheduler, bei welchen schnelles priorisieren nach Zeit oder Dringlichkeit wichtig ist. Daten die mit Binär- oder Ganzahlen, wie Integer oder Long, indexiert sind können in dieser wenig bekannten Datenstruktur sehr effizient verwaltet werden. Dabei ist der \enquote{\ac{EB-Baum}} sehr performant wenn es zu sehr vielen den, Baum verändernden, Operationen, wie: Einfügen, Ändern, Abfragen oder Löschen kommt.\unsure{wie richtig zitieren?}\\
 Einfügeoperationen und das Abfragen von Blättern wird in O(log n) bewältigt. Löschen in O(1).\\
+
 Als Ausgangskonzepte dienten bei seiner Entwicklung der \enquote{balanciertem Binär Baum}\unsure{mention red black tree} und des \enquote{Radix Baumes}. Da aber Operationen wie Löschen von Blättern bei einem \enquote{balanciertem Binär Baum} O(log n) kosten und der Baum aber gerade Operationen wie diese möglichst schnell bewältigen soll ein signifikanter Nachteil. Bei den \enquote{Radix Bäumen}, die sich laut dem Entwickler Willy Tarreau\autocite[Absatz Introduction]{Tarreau} im Bezug auf Geschwindigkeit sehr gut eigenen, wird aber im Betrieb das allocieren von Speicher und die damit verbundene \enquote{Garbage Collection} zum Perfomanceproblem.\\
+
 Daher ist der \ac{EB-Baum} eine hybride Form aus beiden um diese Mängel aus zu gleichen. Es handelt sich nicht um einen balancierten Baum, was in besonderen Fällen zu einer schlechteren Leistung als die eines \enquote{balanciertem Binär Baum} führt\unsure{mention example}. Die Blätter sind im Baum von links nach rechts aufsteigend, nach einer Binär- oder Ganzahl(e.g. Integer, Long) sortiert.\\
+
 Eine weitere Besonderheit des \ac{EB-Baum} ist dass seine maximale Höhe durch den Datentyp der Schlüssel bestimmt wird.
 So kann beispielsweise ein Baum dessen Schlüssel Werte des Datentypes \enquote{Long} sind maximal 64 Ebenen besitzen da der Datentyp aus 64 Bit besteht. Schlüssel werden durch die Abfolge ihrer Binären Repräsentation adressiert. Der Schlüssel dient hierbei wie eine Art binäre Karte. Begonnen am höchsten gesetzten Bits des Schlüssels und wird der Baum Knoten für Knoten durch laufen und an den Knoten bei einer Null links, bei einer Eins rechts abgebogen bis dass Blatt oder falls dieses nicht vorhanden das am naheliegendste gefunden ist
 
@@ -298,8 +301,10 @@ gespeichert. \enquote{EB Knoten} bestehen aus zwei Teilen:
  \caption{EB-Knotenelement}
 \end{wrapfigure}
 Die Aufgabe eines Blattes ist sehr simpel. Es dient nur dazu eingefügte Daten durch einen Pointer zuhalten. Dabei ist es mit einem Schlüssel adressiert und besitzt eine Referenz auf seinen Elternknoten, sowie auf seinen EB-Ursprungsknoten\unsure{SPW fragen}.\\
+
 Ein jedes Knotenelement besteht aus einer Referenz auf sein höher liegenden Elternknoten, dem Ebenenbit \unsure{Darf ich das Bild benutzen?} und zwei Referenzen auf seine Kinderknoten. \\ Das Ebenenbit ist eine Zahl und repräsentiert binär die niedrigste Bitposition des Schlüssels über dem alle Bits gleich sind. Alle unter dem Knoten liegenden Schlüssel haben sich somit bis zu diesem Bit die gleich Bitfolge. Der dritte Teil des Knotens ist die Wurzel die aus zwei Referenzen besteht zu entweder weiteren Knoten oder/sowie Blättern verweist. Da es sich um einen binären Baum handelt repräsentiert je Referenz das linke Bit 0 oder das rechte 1. Nur auf Ebene 0, mit dies repräsentierendem Ebenenbit, kann der Knoten zwei Blätter als Wurzel besitzen, da der Schlüssel sich nur um einen Wert an der letzten, nullten Bitstelle unterscheiden kann.\\
 Auch wenn Knoten sich später verschieben können diese nie unterhalb des mit ihnen angefügtem Blattes oder in einen anderen Zweig des Baumes gelangen. Falls es erlaubt ist Duplikate einzufügen werden  Knoten mit negativen Ebenenbits versehen.\\
+
 Eine weitere Besonderheit hier ist dass die Wurzelreferenzen nie unbelegt sind. Nur die Wurzel des Wurzelknoten des Baumes ist hier eine Ausnahme. Wenn seine zwei Wurzeln auf \enquote{null} referenziert ist der Baum leer. Sobald der Baum befüllt wird wächst dieser an seiner linken/\enquote{0-Wurzel}. Die rechte Wurzel referenziert immer auf \enquote{null}. Dadurch lässt sich der der Wurzelknoten einfach erkennen.
 Sein Ebenenbit ist die höchste Ebene des Baumes und daher automatisch die binäre Länge des Schlüsseldatentyps, e.g. bei Schlüsseln des Datentyps Long wäre das Ebenenbit 64.\\
 
@@ -322,19 +327,20 @@ Die enge Verknüpfung von Knoten und Blatt ist aber nicht zwingend notwendig. In
 
 \section{Betriebliches Umfeld}
 Diese von mir verfasst Arbeit entstand in enger Kooperation mit der neue entstehenden Spinning Wheel GmbH. Das hier implementierte und getestete Datenbankteilkonzept ist ein kleiner Bestandteil eines großen Softwareprojektes mit dessen Entwicklung die Firma sich beschäftigt. So wurde ich mit Idee und Grundkonzept beauftragt und bei deren Umsetzung von Herrn Jens-Peter Haack und Gernot Sänger bei theoretischen Fragen unterstützt.\\
+
 Die Spinning Wheel GmbH befasst sich mit der Entwicklung neuer Softwarelösungen für das Backend von Mobilfunkinfrastruktur. Dabei steht das verarbeiten und speichern von Mobilfunksubscriberdaten durch neue technische Möglichkeiten im Vordergrund.
 
 \section{Thematische Abgrenzung}
 Die in dieser Arbeit beschriebenen, umgesetzten und getesteten Programmkomponenten sind ein kleiner Teil eines großen neuen, verteilten Datenbankkonzeptes der Spinning Wheel GmbH und beschränken sich auf das im Speicher halten von Daten zur Laufzeit, sowie die Synchronisation zwischen Datenbanken zum Ausgleich verpasster Änderungen.\\
+
 Alle weiteren Bestandteile einer Datenbank wie das Persistieren, Verarbeiten oder komplexe Abfragen der gespeicherten Daten sind nicht Teil dieser Arbeit und werden nicht oder nur am Rande behandelt.  
 
 \section{•}
 andere datenbanken synch probleme\\
--> mysql cluster
--> redis
-ziel:
-verschiedene datenbank zellen fuer load balancing
-baum indexe
+-> mysql cluster, Master slave lösung\\
+-> NoSql: redis cluster\\
+
+
 
 \section{Problemstellung}
 Redundaz in verschiedenen Datenbanken
@@ -345,10 +351,24 @@ Packetverlust/verspätung
 
 
 \section{Zielstellung}
-Datenbanksystem aus mehreren redundanten Datenbanken mit einerfacher synchronisations Funktionalität
+Datenbanksystem aus mehreren redundanten Datenbanken mit einerfacher synchronisations Funktionalität\\
 
--> simulation der spinning wheel datenbank
--> gesamte Idee testen
+verschiedene datenbank zellen fuer load balancing
+baum indexe\\
+
+Vorteile\\
+– erhöhte Verfügbarkeit der Daten\\
+– Beschleunigung von Lesezugriffen (bessere Antwortzeiten,
+Kommunikationseinsparungen)\\
+– erhöhte Möglichkeiten zur Lastbalancierung / Query-Optimierung\\
+
+Nachteile\\
+– hoher Update-Aufwand\\
+– erhöhter Speicherplatzbedarf\\
+– erhöhte Systemkomplexität\\
+
+-> simulation der spinning wheel datenbank\\
+-> gesamte Idee testen\\
 -> test wieviel sync ops bei welcher delay und fehlerrate
 Ziel ist es zu bestimmen wie viele SyncOps/s nötig um die Datenbanken unter einer Schranke an Unterschied bei bestimmter Last bei bestimmter Fehlerrate
 
@@ -382,39 +402,43 @@ Anforderungen:
 		
 \section{Konzept des Datenbanksystem}
 Ziel des
-mehrer redundante räumlich getrennte mit dem internet verbundene von einander unabhängige Datenbanken
+mehrer redundante räumlich getrennte mit dem internet verbundene von einander unabhängige gleichrangige vollredundante Datenbanken
+Datenbanken system transparent
+beschreibung access layer
 uml: Komponenten diagramm
 Wo beschreibung der gundlegenden funktionen
-grundlegende konzept mehrer Datenbanken mit gleichen Daten -> bedarf von synchronisation
+grundlegende konzept mehrer Datenbanken mit gleichen Daten -> bedarf von synchronisation damit Daten konsistent bleiben
 
 \section{Konzept der Datenbank}
-Die Grundlegende Idee der Datenbank ist, nicht wie in relationalen Datenbanken Daten durch Tabellen zu gruppieren, sondern durch viele verschiedene Indexe Daten je nach benötigten Kriterien  zugänglich zu machen. So kann jederzeit durch bilden von neuen Indexen auf neue Anforderungen an die Datenbank reagiert werden.
+Die Grundlegende Idee der Datenbank ist, nicht wie in relationalen Datenbanken Daten durch Tabellen zu gruppieren, sondern durch viele verschiedene Indexe Daten je nach benötigten Kriterien  zugänglich zu machen. So kann jederzeit durch bilden von neuen Indexen auf neue Anforderungen an die Datenbank reagiert werden.\\
 
-Neue Datensätze erhalten bei ihrer zentralen Erzeugung im \enquote{Access Layer} eine eindeutige, aufsteigende, Identifikationsnummer. Die Nummer ist in allen Datenbanken gleich, verändert sich nie und adressiert den Datensatz bis dieser gelöscht wird. Eine weitere Nummer, die \enquote{Change ID}, symbolisiert den Stand des Datums. Wenn das Datum angelegt wird sind Identifikationsnummer und \enquote{Change ID} identisch. Wird der Datensatz verändert wird diesem immer größer werden \enquote{Change ID} zu gewiesen. Somit lässt sich leicht erkennen ob Daten verändert wurden oder noch in ihrem Ursprungszustand sind. Besonders praktisch ist diese beim Vergleichen von einem Datensatz in unterschiedlichen Datenbanken. Durch vergleichen der \enquote{Change ID} kann so sehr schnell ermittelt werden welche von Beiden aktueller ist und der Unterschied ausgeglichen werden.
+Neue Datensätze erhalten bei ihrer zentralen Erzeugung im \enquote{Access Layer} eine eindeutige, aufsteigende, Identifikationsnummer. Die Nummer ist in allen Datenbanken gleich, verändert sich nie und adressiert den Datensatz bis dieser gelöscht wird. Eine weitere Nummer, die \enquote{Change ID}, symbolisiert den Stand des Datums. Wenn das Datum angelegt wird sind Identifikationsnummer und \enquote{Change ID} identisch. Wird der Datensatz verändert wird diesem immer größer werden \enquote{Change ID} zu gewiesen. Somit lässt sich leicht erkennen ob Daten verändert wurden oder sich noch ihrem Ursprungszustand befinden. Besonders praktisch ist diese beim Vergleichen von einem Datensatz in unterschiedlichen Datenbanken. Durch vergleichen der \enquote{Change ID} kann so sehr schnell ermittelt werden welche von Beiden aktueller ist und der Unterschied ausgeglichen werden.\\
 
 Für die Identifikationsnummer als auch \enquote{Change ID} wird eine eigener Index gepflegt. Hierfür eignet sich besonders gut der in \autoref{sec:ebTreeGrundlagen} beschriebene \ac{EB-Baum} da dieser auf das nach Größe sortiertem Verwalten von Ganzzahlartigen Schlüsseln optimiert ist. 
-
-
-
-
 
 
 
 \section{Synchronisation zwischen Datenbanken}
 \label{sec:eBTreeSynchronisation}
 Uml: sequence or communikation diagramm
-Durch ein Vergleichen der Identifikationsnummer und \enquote{Change IDs} der Datensätze in den sich synchronisierenden Datenbank kann einfach festgestellt werden welche Daten fehlen und falls diese vorhanden auf welcher Seite diese aktueller ist. Ein Vergleichen der gesamten Datenbanken, gerade wenn diese unter hoher Last stehen und sehr viele Datensätze verwalten, verbraucht viele Ressourcen. Außerdem ist dies ab einem gewissen Grad von Last und Masse an Daten nicht mehr möglich. Ein komplettes Abgleichen nimmt in diesem Fall so viel Zeit in Anspruch dass durch neue Operationen wieder ein Ungleichgewicht zwischen den Datenbanken entstehen würde.
+Durch ein Vergleichen der Identifikationsnummern und \enquote{Change IDs} der Datensätze in den sich synchronisierenden Datenbanken kann einfach festgestellt werden welche Daten fehlen und falls diese vorhanden auf welcher Seite diese aktueller sind. Ein Vergleichen der gesamten Datenbanken jedoch, gerade wenn diese unter hoher Last stehen und sehr viele Datensätze verwalten, verbraucht viele Ressourcen. Ab einem gewissen Grad von Last und Masse an Daten ist dies nicht mehr möglich. Ein komplettes Abgleichen nimmt in diesem Fall so viel Zeit in Anspruch dass durch neue Operationen wieder ein Ungleichgewicht zwischen den Datenbanken entstehen würde.\\
 
-Daher gilt es eine Synchronisationsmethodik zu finden die zum einen schnell kleine Unterschiede als auch in einer längeren Zeitspanne Datenbanken die sich auf völlig verschiedenen Ständen befinden auszugleichen.
-Die \enquote{Change IDs}, die zum Vergleich während der Synchronisation gepflegt werden, werden in jeder Datenbank in einem \ac{EB-Baum} gehalten. Ein Vergleichen von Zweigen unterhalb jedes Knotens ist daher von großem Vorteil. Um dies Möglich zu machen wird für jeden Knoten eine den Zustand seiner beiden Kindobjekte repräsentierende Nummer, die \enquote{Node State ID}, errechnet. Dazu werden die Nummern der Kindobjekte, \enquote{Change IDs} falls das Kind ein Blatt oder \enquote{Node State ID} falls das Kind ein Knoten ist, durch eine binäre Oderoperation verbunden.
- 
+Daher gilt es eine Synchronisationsmethodik zu finden die zum einen schnell kleine Unterschiede als auch in einer längeren Zeitspanne Datenbanken, die sich auf völlig verschiedenen Ständen befinden, auszugleichen.
+Die \enquote{Change IDs}, die zum Vergleich während der Synchronisation gepflegt werden, werden in jeder Datenbank in einem \ac{EB-Baum} gehalten. Ein Vergleichen von Zweigen unterhalb jedes Knotens ist daher von großem Vorteil. Um dies Möglich zu machen wird für jeden Knoten eine den Zustand seiner beiden Kindobjekte repräsentierende Nummer, die \enquote{Node State ID}, errechnet. Dazu werden die Nummern der Kindobjekte, \enquote{Change IDs} falls das Kind ein Blatt oder \enquote{Node State ID} falls das Kind ein Knoten ist, durch eine binäre Oderoperation verbunden. Während des Synchronisationsprozesses senden sich beide Seiten sogenannte \enquote{Deltas} und deren binäre Positionsangabe. Dabei handelt es sich um die \enquote{Node State ID} eines Knoten sowie die den Stand wieder gebenden Nummern seiner Kinder. Diese logisch zusammen hängende Dreieck wird als \enquote{Delta} bezeichnet. Durch eine binäre Abfolge kann die Position des Deltas im Baum angegeben werden. Die binären Ziffern geben vom obersten Knoten aus an wie der Baum zu durch laufen ist um zum Deltaobjekt zu gelangen. Ist die Ziffer 0  ist das nächste Element auf dem Weg das linke Kindobjekt oder ist die Ziffer 1 das rechte Kindobjekt. \\\\
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \begin{center}
+    \includegraphics[width=.6\linewidth]{bilder/SynchroDelta.png}
+  \end{center}
+ \caption{Deltaobjekt}
+\end{wrapfigure}
+Die Synchronisation kann von jeder Datenbank angestoßen werden. Eine Möglichkeit dies zu Koordinieren ist dass jede Datenbank zufällig in einem festgelegtem Zeitintervall zu synchronisieren beginnt. Das Ablaufen von parallelen Synchronisatitionen ist dabei nicht Problematisch \unsure{SPW korrekt?}. Zu Beginn sendet die die Synchronisation startende Datenbank ein Delta, bestehend aus der \enquote{Node State Id} des ersten Knotens unter dem Wurzelknoten Nummern der beiden Kindobjekte, sowie dessen Positionsangabe  gekapselt in einer Synchronisationsanfrage an die andere Datenbank. Diese lokalisiert das Delta und vergleicht die Nummern des linken Kindob
 
--> ping synchronisation vs komplett check?
--> delta
--> addressierung des deltas via binärzahl
--> suche nach linkestem unterschied ...
+
+-> suche nach linkestem unterschied warum 
 
 -> finden von lost inserts und lost updates		
+-> konzpt let it fail fehlertolerant 
+-> Selbsheilender process
 	
 \section{Architektur des Prototypen}
 uml\\ package diagram komponenten diagram
@@ -422,12 +446,13 @@ aufteilung komponenten und simulations\\
 
 Der in dieser Arbeit umgesetzte Teil des Datenbankkonzeptes besteht\\
 Der in dieser Arbeit erstellte Prototyp besteht grundlegend aus zwei Teilen. Zum einen den Komponenten der grundlegenden Funktionen des hier implementierten Datenbankprototypen und der Synchronisation zwischen zwei Instanzen der Datenbank. Zum anderen einer Simulationsumgebung mit welcher die Synchronisation zwischen den Datenbanken in verschiedenen Szenarios beeinflusst und die Leistung getestet werden kann. \\
+
 Teil der Applikation ist einem Actorsystem in dem jede Datenbank durch einen Aktor repräsentiert wird.
 Das Senden von Actornachrichten zwischen den Datenbanksystem ähnelt dem Senden von TCP/IP-Paketen zwischen zwei Datenbanken an verschiedenen Standorten. Wann welche Nachricht und in welcher Reihenfolge bei welcher Datenbank ankommt ist nicht vorhersehbar. Verlust oder Verspätung von Paketen und die daraus resultierende Ungleichheit der Datenbanken lassen sich so gut simulieren.
 Jeden Datenbank wird durch einen Actor repräsentiert und kann Nachrichten mit neuen Daten, Änderungen oder Synchronisationsanfragen erhalten und senden. Zwischen den Datenbankaktoren befindet sich, als Teil der Simulationsumgebung, ein Kommunikationsebene. In dieser können  Verlust und Verspätung von Paketen gesteuert werden.
 
 
-
+senden der nachrichten zustandslos
 
 \subsection{Datenbankkomponenten}
 access layer
@@ -459,8 +484,11 @@ In dieser wird bereits die enge Koppelung von Knoten und Blättern, der ursprün
 Eine besondere Anforderung an den Baum ist das die sortiert, verwalteten Schlüssel einzigartig sind und ein Einfügen von Duplikaten verhindert wird. Da das Verwalten von Duplikaten an sich möglich ist aber für das Funktionieren des Baumes nicht zwingend nötig wird ein einfügen dieser, bei der folgend beschrieben Umsetzung, vermieden. \\
 \subsection{Grundlegender Aufbau}
 Der Baum selbst ist einer eigenen, generischen Klasse umgesetzt. Diese besteht aus den Funktionalitäten des Baumes, zwei \enquote{Case-Klassen}, repräsentativ für Knoten und Blätter, sowie einem \enquote{Trait} der deren gemeinsame Eigenschaften beschreibt. Der generische Typ der Klasse wird bei deren Instanziierung übergeben und legt den Datentyp der in den Blättern gespeicherten Daten fest. Somit kann der Baum jeder Art von Daten halten ohne verändert werden zu müssen.\\
+
 Der \enquote{Trait} Child beschreibt was dass \enquote{Kind} eines Knoten können muss. Ganz gleich ob es sich hier um ein Blatt oder einen weiteren, einen neuen Zweig öffnenden, Knoten handelt. Festgelegt ist das ein jedes \enquote{Kindobjekt} eine Referenz auf ein \enquote{Elternobekt} haben muss und eine Methode die die eindeutig identifizierbare ID des Objektes zurück gibt. Die ID ist bei Blättern der Schlüssel mit dem das Blatt eingefügt wird und bei Knoten die \enquote{NodeStateID} welche zum vergleichen von Baumzweigen anderer Datenbanken bei der Synchronisation verwendet wird.\\
+
 Durch den Einsatz von \enquote{Case-Klassen} kann durch \enquote{Pattern Matching} beim durchlaufen des Baumes sehr einfach geprüft werden welcher Klasse Kindelemente angehören und diese verarbeitet werden.\\
+
 Die Aufgabe des Blatt \enquote{Case Klasse} ist sehr einfach. Sie hält die Referenz auf einen übergeben Datensatz und ist durch einen eindeutige Schlüssel identifizierbar. Knoten hingegen verfügen über mehr Logik. So kann dieser die in seiner Wurzel gespeicherten Kindobjekte, weitere Zweige oder Blätter, zurück geben oder neue anfügen. Durch sein Ebenenbit weiß ein Knoten auf welcher binären Ebene des Baumes er steht und kann in dem, bei einer Abfrage- oder Einfügeoperation, übergebenen Schlüssel an der entsprechenden Stelle nachschauen und seinen linkes oder rechtes Kindobjekt verarbeiten.
 
 \begin{listing}[H]
@@ -502,6 +530,7 @@ Beim einfügen eines neuen Blatt wird zunächst der Baum nach seinem Schlüssel 
 
 \subsubsection{Erzeugen von Knoten Status IDs}
 Das vergleichen von Blättern ist durch deren einzigartige, aufsteigenden Schlüssel einfach um zu setzen. Bei dem, in dieser Arbeit umgesetzten, Synchronisationansatz, ~\autoref{sec:eBTreeSynchronisation}, muss es aber möglich sein ganze Zweige unterhalb eines Knotens zu vergleichen. Daher besitzt der Baum eine Funktion die es ermöglicht für jeden Knoten eine Nummer, die \enquote{Knoten Status ID}, zu erzeugen die den Zustand seiner beiden Kinder repräsentiert.\\
+
 Wird ein Blatt angefügt oder gelöscht werden die \enquote{Knoten Status ID} rekursiv nach oben bis zur Wurzel generiert. Hierfür werden die IDs seiner Kindobjekte einfach durch eine binäre Oder-Operation verknüpft. Ist das Kindobjekt ein Blatt wird als ID der Schlüssel verwendet. Ist das Objekt ein Knoten seine bereits berechnete \enquote{Knoten Status ID}. 
 
 \subsubsection{Methoden zur Synchronisation}

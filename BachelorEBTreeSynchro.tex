@@ -350,6 +350,16 @@ Datenbanken auf beiden Seiten verschieden\\
 Packetverlust/verspätung
 
 
+
+\section{nicht funktionale Anforderungen}
+
+\section{funktionale Anforderungen}
+einfügen
+updaten
+dbsystem löschen von datensatz synchron
+synchronisation
+Daher gilt es eine Synchronisationsmethodik zu finden die zum einen in der Lage ist schnell kleine Unterschiede als auch in einer längeren Zeitspanne Datenbanken, die sich auf völlig verschiedenen Ständen befinden, auszugleichen.
+
 \section{Zielstellung}
 Datenbanksystem aus mehreren redundanten Datenbanken mit einerfacher synchronisations Funktionalität\\
 
@@ -385,6 +395,7 @@ Anforderungen:
 ?
 
 \section{Testdesign}
+-> Test id länge node chnage id error
 -> Entwurf der Testdaten
 -> Testdesign -> test eines use cases
 -> Unittests: grobe Funktionstests 
@@ -414,24 +425,50 @@ Die Grundlegende Idee der Datenbank ist, nicht wie in relationalen Datenbanken D
 
 Neue Datensätze erhalten bei ihrer zentralen Erzeugung im \enquote{Access Layer} eine eindeutige, aufsteigende, Identifikationsnummer. Die Nummer ist in allen Datenbanken gleich, verändert sich nie und adressiert den Datensatz bis dieser gelöscht wird. Eine weitere Nummer, die \enquote{Change ID}, symbolisiert den Stand des Datums. Wenn das Datum angelegt wird sind Identifikationsnummer und \enquote{Change ID} identisch. Wird der Datensatz verändert wird diesem immer größer werden \enquote{Change ID} zu gewiesen. Somit lässt sich leicht erkennen ob Daten verändert wurden oder sich noch ihrem Ursprungszustand befinden. Besonders praktisch ist diese beim Vergleichen von einem Datensatz in unterschiedlichen Datenbanken. Durch vergleichen der \enquote{Change ID} kann so sehr schnell ermittelt werden welche von Beiden aktueller ist und der Unterschied ausgeglichen werden.\\
 
-Für die Identifikationsnummer als auch \enquote{Change ID} wird eine eigener Index gepflegt. Hierfür eignet sich besonders gut der in \autoref{sec:ebTreeGrundlagen} beschriebene \ac{EB-Baum} da dieser auf das nach Größe sortiertem Verwalten von Ganzzahlartigen Schlüsseln optimiert ist. 
-
-
+Für die Identifikationsnummer als auch \enquote{Change ID} wird eine eigener Index gepflegt. Hierfür wird der sich besonders gut dafür eignende, in \autoref{sec:ebTreeGrundlagen} beschriebene, \ac{EB-Baum} verwendet, da dieser auf das nach Größe sortiertem Verwalten von Ganzzahlartigen Schlüsseln optimiert ist. In die Datenbank eingefügte Datensätze werden in einem Container, dem \enquote{EbTreeDataObject}, gekapselt. Dieses enthält zum einen die Identifikationsnummer, die aktuelle \enquote{Change ID} sowie eine Referenz auf das Datum. Wird nun in die Datenbank ein Datensatz eingefügt wird dieser mit der Identifikationsnummer in den dazu gehörigen \enquote{ID-Baum} und mit der \enquote{Change ID} in dem \enquote{Change ID-Baum} eingefügt. Das Blatt jedes Baumes hält somit die entsprechende Nummer und den Container. Es lässt sich somit leicht auflösen welche \enquote{Change ID} mit welcher Identifikationsnummer und umgekehrt verbunden ist. \\\\
+Beim Verändern eines Datensatzes wird die alte \enquote{Change ID} aus dem \enquote{Change ID-Baum} gelöscht und die neue \enquote{Change ID} wieder eingefügt. Da der \ac{EB-Baum} seine Schlüssel der Größe nach von links nach rechts im Baum sortiert und neu erstellte Schlüssel immer größer werden. Befinden sich neu eingefügte Elemente im \enquote{ID-Baum} sowie neu veränderte Elemente im \enquote{Change ID-Baum} ganz rechts in der Baumstruktur.\\\\
+Soll ein Datum gelöscht werden werden nicht einfach die damit verknüpften Nummern und der Datensatz gelöscht. Beim Löschen muss sichergestellt werden dass das Datum aus allen Datenbanken entfernt wird da dieses sonst in der nachfolgend beschriebenen Synchronisationsprozess wieder hergestellt wird. Falls der Datensatz auf einer Seite der an Synchronisation beteiligten Datenbanken fehlt und auf der anderen Vorhanden ist lässt sich nicht feststellen ob dieses Ungleichgewicht durch ein verlorenes Einfügen oder Löschen zu Stande gekommen ist und ob das Element auf der einen Seite gelöscht oder auf der anderen wieder hergestellt werden soll. Daher werden nur die Daten des \enquote{EbTreeDataObject} gelöscht und eine neue \enquote{Change ID} eingefügt. Das Vollständige Löschen von Identifikationsnummer und \enquote{Change ID} aus beiden Bäumen sowie des \enquote{EbTreeDataObject} erfolgt in einem gesonderten Löschprozess der sicherstellt das diese Veränderung an jeder Datenbank vorgenommen wird.
 
 \section{Synchronisation zwischen Datenbanken}
 \label{sec:eBTreeSynchronisation}
-Uml: sequence or communikation diagramm
-Durch ein Vergleichen der Identifikationsnummern und \enquote{Change IDs} der Datensätze in den sich synchronisierenden Datenbanken kann einfach festgestellt werden welche Daten fehlen und falls diese vorhanden auf welcher Seite diese aktueller sind. Ein Vergleichen der gesamten Datenbanken jedoch, gerade wenn diese unter hoher Last stehen und sehr viele Datensätze verwalten, verbraucht viele Ressourcen. Ab einem gewissen Grad von Last und Masse an Daten ist dies nicht mehr möglich. Ein komplettes Abgleichen nimmt in diesem Fall so viel Zeit in Anspruch dass durch neue Operationen wieder ein Ungleichgewicht zwischen den Datenbanken entstehen würde.\\
+\begin{figure}[h!]
+ 	\centering
+    \includegraphics[width=1\textwidth]{bilder/SynchroProzess.png}
+    \caption{Synchronisationsprozess}
+\end{figure}
+Durch ein Vergleichen der Identifikationsnummern und \enquote{Change IDs} der Datensätze in den sich synchronisierenden Datenbanken kann einfach festgestellt werden welche Daten fehlen und falls diese vorhanden auf welcher Seite diese aktueller sind. Ein Vergleichen der gesamten Datenbanken jedoch, gerade wenn diese unter hoher Last stehen und sehr viele Datensätze verwalten, verbraucht viele Ressourcen. Ab einem gewissen Grad von Last durch Operationen und Masse an Daten ist dies nicht mehr möglich. Ein komplettes Abgleichen nimmt in diesem Fall so viel Zeit in Anspruch dass durch neue Operationen wieder ein Ungleichgewicht zwischen den Datenbanken entstehen würde.\\\\
+Daher gilt es eine Synchronisationsmethodik zu finden die zum einen in der Lage ist schnell kleine Unterschiede als auch in einer längeren Zeitspanne Datenbanken, die sich auf völlig verschiedenen Ständen befinden, auszugleichen.
+Die \enquote{Change IDs}, die zum Vergleich während der Synchronisation gepflegt werden, werden in jeder Datenbank in einem \ac{EB-Baum} gehalten. Die Möglichkeit des Vergleichen von Zweigen unterhalb jedes Knotens ist daher von großem Vorteil. Um dies Möglich zu machen wird für jeden Knoten eine den Zustand seiner beiden Kindobjekte repräsentierende Nummer, die \enquote{Node Change ID}, errechnet. Dazu werden die Nummern der Kindobjekte, \enquote{Change IDs} falls das Kind ein Blatt oder \enquote{Node Change ID} falls das Kind ein Knoten ist, durch eine binäre Oderoperation verbunden. Während des Synchronisationsprozesses senden sich beide Seiten sogenannte \enquote{Deltas}. Es werden eine die Position des Elternknoten beschreibenen Ganzzahl, der Bitposition des  Elternknoten, der Bitposition des Elternknoten des Elternknoten  sowie die den Stand wieder gebenden Nummern seiner Kinder. Diese logisch zusammen hängende Dreieck wird als \enquote{Delta} bezeichnet. 
 
-Daher gilt es eine Synchronisationsmethodik zu finden die zum einen schnell kleine Unterschiede als auch in einer längeren Zeitspanne Datenbanken, die sich auf völlig verschiedenen Ständen befinden, auszugleichen.
-Die \enquote{Change IDs}, die zum Vergleich während der Synchronisation gepflegt werden, werden in jeder Datenbank in einem \ac{EB-Baum} gehalten. Ein Vergleichen von Zweigen unterhalb jedes Knotens ist daher von großem Vorteil. Um dies Möglich zu machen wird für jeden Knoten eine den Zustand seiner beiden Kindobjekte repräsentierende Nummer, die \enquote{Node State ID}, errechnet. Dazu werden die Nummern der Kindobjekte, \enquote{Change IDs} falls das Kind ein Blatt oder \enquote{Node State ID} falls das Kind ein Knoten ist, durch eine binäre Oderoperation verbunden. Während des Synchronisationsprozesses senden sich beide Seiten sogenannte \enquote{Deltas} und deren binäre Positionsangabe. Dabei handelt es sich um die \enquote{Node State ID} eines Knoten sowie die den Stand wieder gebenden Nummern seiner Kinder. Diese logisch zusammen hängende Dreieck wird als \enquote{Delta} bezeichnet. Durch eine binäre Abfolge kann die Position des Deltas im Baum angegeben werden. Die binären Ziffern geben vom obersten Knoten aus an wie der Baum zu durch laufen ist um zum Deltaobjekt zu gelangen. Ist die Ziffer 0  ist das nächste Element auf dem Weg das linke Kindobjekt oder ist die Ziffer 1 das rechte Kindobjekt. \\\\
+Durch die die Position des Deltas beschreibende Ganzzahl kann der Knoten mit dem das Delta verglichen werden soll in der anderen Datenbank gefunden werden. Bei der Lokalisierung des zu vergleichenden Knoten wird am obersten Knoten des Baumes begonnen. Je nach dem ob 0 oder 1 in der Adressganzzahl an der binären Stelle der Bitposition des Knoten  gesetzt ist wird das linke oder rechte Kindobjekt weiter behandelt. Dies wird solange wiederholt bis die im Delta übergebene Elternbitebene erreicht und der zu vergleichende Knoten ermittelt ist
+
 \begin{wrapfigure}{r}{0.5\textwidth}
   \begin{center}
     \includegraphics[width=.6\linewidth]{bilder/SynchroDelta.png}
   \end{center}
  \caption{Deltaobjekt}
 \end{wrapfigure}
-Die Synchronisation kann von jeder Datenbank angestoßen werden. Eine Möglichkeit dies zu Koordinieren ist dass jede Datenbank zufällig in einem festgelegtem Zeitintervall zu synchronisieren beginnt. Das Ablaufen von parallelen Synchronisatitionen ist dabei nicht Problematisch \unsure{SPW korrekt?}. Zu Beginn sendet die die Synchronisation startende Datenbank ein Delta, bestehend aus der \enquote{Node State Id} des ersten Knotens unter dem Wurzelknoten Nummern der beiden Kindobjekte, sowie dessen Positionsangabe  gekapselt in einer Synchronisationsanfrage an die andere Datenbank. Diese lokalisiert das Delta und vergleicht die Nummern des linken Kindob
+Die Synchronisation kann von jeder Datenbank angestoßen werden. Eine Möglichkeit dies zu Koordinieren ist dass jede Datenbank zufällig in einem festgelegtem Zeitintervall zu synchronisieren beginnt. Das Ablaufen von parallelen Synchronisationen ist dabei nicht Problematisch \unsure{SPW korrekt?}. Die Synchronisation besteht aus zwei Phasen. 
+\subsection{Synchronisation Phase 1} 
+In der Ersten Phase gilt es den Unterschied zu finden der sich in beiden Bäumen am weitesten links befindet und somit die älteste Unterschied zwischen den Datenbanken darstellt. Da im laufenden Betrieb auf der rechten Seite des Baumes viele Veränderung statt findet soll immer der Unterschied der davon am weitesten Entfernt liegt zu erst behoben werden. Daten die sich oft Verändern sind sehr weit rechts im Baum zu finden und da somit besteht die Chance dass sich mögliche verlorene Veränderungen bei einer erneuten Veränderung selbst ausgleichen.
+Die die Synchronisation startende Datenbank sendet ein Delta des höchsten Knoten gekapselt in einer Synchronisationsanfrage an die andere Datenbank. Diese lokalisiert das Delta und vergleicht die Nummer des linken Kindobjektes des erhaltenen Delta mit dem  im eigenen Baum gefundenen linken Kindobjekt. Sind diese gleich werden die rechten Kindobjekte verglichen. Wird dabei kein Unterschied erkannt sind die Datenbanken synchron und der Synchronisationsvorgang ist abgeschlossen. Falls aber ein Unterschied lokalisiert werden kann wird mit einem Delta bestehend aus dem sich unterscheidenden Kindobjektes geantwortet. Die sich synchronisierenden Datenbanken spielen mit dem Senden der Deltas eine Art von \enquote{Ping-Pong} bis der am weiten links liegende Unterschied gefunden ist. 
+
+
+Beim Abgleichen der Deltas kommt es zu unterschiedlichen Vergleichsfällen die vom Synchronisationsalgorithmus separat behandelt werden müssen:
+\subsubsection{Datenbanken Synchron}
+
+\subsubsection{Unterschied Links}
+
+\subsubsection{Unterschied Rechts}
+
+\subsubsection{Bitebenenunterschied mit Unterschied Rechts}
+
+\subsubsection{Bitebenenunterschied mit fehlenden Ebenen}
+
+
+\subsubsection{Check if Leaf is unique}
+
+\subsection{Synchronisation Phase 2}
 
 
 -> suche nach linkestem unterschied warum 
@@ -485,7 +522,7 @@ Eine besondere Anforderung an den Baum ist das die sortiert, verwalteten Schlüs
 \subsection{Grundlegender Aufbau}
 Der Baum selbst ist einer eigenen, generischen Klasse umgesetzt. Diese besteht aus den Funktionalitäten des Baumes, zwei \enquote{Case-Klassen}, repräsentativ für Knoten und Blätter, sowie einem \enquote{Trait} der deren gemeinsame Eigenschaften beschreibt. Der generische Typ der Klasse wird bei deren Instanziierung übergeben und legt den Datentyp der in den Blättern gespeicherten Daten fest. Somit kann der Baum jeder Art von Daten halten ohne verändert werden zu müssen.\\
 
-Der \enquote{Trait} Child beschreibt was dass \enquote{Kind} eines Knoten können muss. Ganz gleich ob es sich hier um ein Blatt oder einen weiteren, einen neuen Zweig öffnenden, Knoten handelt. Festgelegt ist das ein jedes \enquote{Kindobjekt} eine Referenz auf ein \enquote{Elternobekt} haben muss und eine Methode die die eindeutig identifizierbare ID des Objektes zurück gibt. Die ID ist bei Blättern der Schlüssel mit dem das Blatt eingefügt wird und bei Knoten die \enquote{NodeStateID} welche zum vergleichen von Baumzweigen anderer Datenbanken bei der Synchronisation verwendet wird.\\
+Der \enquote{Trait} Child beschreibt was dass \enquote{Kind} eines Knoten können muss. Ganz gleich ob es sich hier um ein Blatt oder einen weiteren, einen neuen Zweig öffnenden, Knoten handelt. Festgelegt ist das ein jedes \enquote{Kindobjekt} eine Referenz auf ein \enquote{Elternobekt} haben muss und eine Methode die die eindeutig identifizierbare ID des Objektes zurück gibt. Die ID ist bei Blättern der Schlüssel mit dem das Blatt eingefügt wird und bei Knoten die \enquote{Node Change ID} welche zum vergleichen von Baumzweigen anderer Datenbanken bei der Synchronisation verwendet wird.\\
 
 Durch den Einsatz von \enquote{Case-Klassen} kann durch \enquote{Pattern Matching} beim durchlaufen des Baumes sehr einfach geprüft werden welcher Klasse Kindelemente angehören und diese verarbeitet werden.\\
 
@@ -497,9 +534,9 @@ Die Aufgabe des Blatt \enquote{Case Klasse} ist sehr einfach. Sie hält die Refe
 	               frame=lines,
 	               framesep=1mm]{scala}
 case class Node[T](myBit: Int) extends Child[T] {
-    var myZero:     Child[T]  = _
-    var myOne:      Child[T]  = _
-    var nodeStateID:Long     = _
+    var myZero:				Child[T]  = _
+    var myOne:				Child[T]  = _
+    var nodeChangeID:	Long    	= _
 
     def bitOne(uid: Long): Boolean = ((uid & (1L << myBit)) != 0) && (myBit < 64)
 
@@ -567,7 +604,7 @@ binaerlogik beschreiben
 \chapter{Fazit und Ausblick alias Ergebnis}
 \todo[inline]{Zusammenfassung, Bewertung der Ergebnisse, Vergleich mit der Zielstellung, Ausblick}
 
-
+- optimize Synchro bigger deltas, abkuerzungen
 \newpage
 \listoftodos[Notes]
 

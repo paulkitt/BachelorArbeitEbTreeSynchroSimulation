@@ -21,7 +21,7 @@ bibtotocnumbered									% numb point literaturverz in inhaltsverz => bibliograp
 %----------------------------------------------------------------------------------------------------------------------------------------------
 % ADDITIONAL LIBS
 
-
+\usepackage{grffile} %remove file names of images
 
 % Wrapping text around figures
 \usepackage{wrapfig}  %
@@ -87,6 +87,10 @@ bibtotocnumbered									% numb point literaturverz in inhaltsverz => bibliograp
 \usepackage{listings} % -> %TODO use minted
 \usepackage{minted}
 
+\makeatletter
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+
 %----------------------------------------------------------------------------------------------------------------------------------------------
 % ADDITIONAL LIBS TO CHECK
 
@@ -126,22 +130,8 @@ bibtotocnumbered									% numb point literaturverz in inhaltsverz => bibliograp
 \begin{document}
 
 %TODO set 1,5 zeilenabstand , verdana, schriftgroesse 10
-%TODO style titelSeite -> check jonny -> richtliene
 %TODO check bewilligten title 
-\title{{\bf Bachelorarbeit:} \\ \begin{large}Synchronisation von Binärbaum-indexierten, verteilten
-InMemory-NoSQL-Datenbanken\end{large}}
-\author{
-	Paul Kitt \\
-	528516   \\	
-	paul.kitt@student.htw-berlin.de	\\
-\\
-\textbf{Studienort:}	\\
-	Hochschule für Technik und Wirtschaft Berlin \\
-	Angewandte Informatik (FB4) \\
-	\textbf{Betreuer:} \\
-	Prof. Dr.-Ing. Hendrik Gärtner, HTW Berlin \\
-	Jens-Peter Haack,  SpinningWheel GmbH
-}
+
 
 \begin{titlepage}
 	\begin{center}
@@ -162,43 +152,59 @@ InMemory-NoSQL-Datenbanken\end{large}}
 		 \HRule \\[0.4cm]
 	    {\bfseries\Large
 	        \begin{LARGE}
-	        Bachelorarbeit:\\
-	        \end{LARGE} 
 	        Synchronisation von Binärbaum-indexierten, verteilten
 			InMemory-NoSQL-Datenbanken\\
+	        \end{LARGE} 
 	    }    
 		\HRule \\[1.5cm]
-	 	\vfill
-	
-	% Author and supervisor
-		\begin{minipage}{0.4\textwidth}
-			\begin{flushleft} \large
-				\textbf{Author:}\\
-				Paul Kitt, 528516 \\
-				Angewandte Informatik (FB4) \\	
-				Hochschule für Technik und Wirtschaft Berlin\\
-				paul.kitt@student.htw-berlin.de	\\~\\
-				\textbf{Studienort:}	\\
-				Hochschule für Technik und Wirtschaft Berlin \\
-				Angewandte Informatik (FB4) \\
+			\begin{minipage}{1.0\textwidth}
+				\begin{flushleft}
+				\Large	Abschlussarbeit
+				\end{flushleft}
+			\end{minipage}
+			\vfill
+			\begin{minipage}{1.0\textwidth}
+				\begin{flushleft}
+					\Large zur Erlangung des akademischen Grades\\
+					\Large Bachelor of Science (B.Sc.)
+				\end{flushleft}
+			\end{minipage}
+			\vfill
+			\begin{minipage}{1.0\textwidth}
+				\begin{flushleft}
+					\Large an der
+				\end{flushleft}
+			\end{minipage}
+			\vfill
+			\begin{minipage}{1.0\textwidth}
+				\begin{flushleft}
+					\Large Hochschule für Technik und Wirtschaft Berlin\\
+					\Large Fachbereich Wirtschaftswissenschaften \rom{2}\\
+					\Large Studiengang Angewandte Informatik\\
+				\end{flushleft}
+			\end{minipage}
+			\vfill
+			\begin{minipage}{1.0\textwidth}
+				\begin{flushleft}
+					\Large 1. Prüfer: Prof. Dr.-Ing. Hendrik Gärtner\\
+					\Large 2. Prüfer: Jens-Peter Haack\\ \todo[inline]{Titel Adademischer Grad}
+				\end{flushleft}
+			\end{minipage}
+			\vfill
+			\begin{minipage}{1.0\textwidth}
+				\begin{flushleft}
+					\Large Eingereicht von Paul Kitt
+				\end{flushleft}
+			\end{minipage}
+
+		\vfill
+		\begin{minipage}{1.0\textwidth}
+			\begin{flushleft}
+				{\Large \today}
 			\end{flushleft}
 		\end{minipage}
-		\begin{minipage}{0.4\textwidth}
-			\begin{flushright} \large
-				\textbf{Betreuer:} \\
-				Prof. Dr.-Ing. Hendrik Gärtner, HTW Berlin \\
-				Jens-Peter Haack,  SpinningWheel GmbH
-			\end{flushright}
-		\end{minipage}	
 		\vfill
-		\HRule \\
-		\begin{minipage}{0.4\textwidth}
-			\begin{flushright} \large
-				Datum/Unterschrift des Studenten
-			\end{flushright}
-		\end{minipage}
-		\vfill
-		{\large \today}
+
 	\end{center}
 \end{titlepage}
 \tableofcontents
@@ -209,6 +215,7 @@ Abkürzungsverzeichniss:\\
 \begin{acronym}[EB-Baum] % option laengest abk def einzuglänge
  	\acro{EB-Baum}{Elastische Binär Baum}
  	\acrodefplural{EB-Baum}[EB-Bäume]{Elastische Binär Bäume}
+ 	\acro{ID}{Identifikationsnummer}
 \end{acronym}
 \renewcommand\listoflistingscaption{Verzeichnis aller Codebeispiele}
 \listoflistings
@@ -306,7 +313,7 @@ Ein jedes Knotenelement besteht aus einer Referenz auf sein höher liegenden Elt
 Auch wenn Knoten sich später verschieben können diese nie unterhalb des mit ihnen angefügtem Blattes oder in einen anderen Zweig des Baumes gelangen. Falls es erlaubt ist Duplikate einzufügen werden  Knoten mit negativen Ebenenbits versehen.\\
 
 Eine weitere Besonderheit hier ist dass die Wurzelreferenzen nie unbelegt sind. Nur die Wurzel des Wurzelknoten des Baumes ist hier eine Ausnahme. Wenn seine zwei Wurzeln auf \enquote{null} referenziert ist der Baum leer. Sobald der Baum befüllt wird wächst dieser an seiner linken/\enquote{0-Wurzel}. Die rechte Wurzel referenziert immer auf \enquote{null}. Dadurch lässt sich der der Wurzelknoten einfach erkennen.
-Sein Ebenenbit ist die höchste Ebene des Baumes und daher automatisch die binäre Länge des Schlüsseldatentyps, e.g. bei Schlüsseln des Datentyps Long wäre das Ebenenbit 64.\\
+Sein Ebenenbit ist die höchste Ebene des Baumes und daher automatisch die binäre Länge des Schlüsseldatentyps, e.g. bei Schlüsseln des Datentyps Long ist das Ebenenbit 64.\\
 
 \subsection{Einfügen von Daten}
 Beim einfügen neuer Datensätze wird jeweils ein Blatt, das die Daten hält, sowie ein Knoten mit dem dass Blatt in Kombination eingefügt wird, eingefügt. Der einzige Fall in dem ein Blatt ohne Knoten angefügt wird ist wenn der Baum leer ist.
@@ -352,6 +359,29 @@ Packetverlust/verspätung
 
 
 \section{nicht funktionale Anforderungen}
+ein gewisser fehlergrad sind tolerierbar solange sie irgendwann behoben wird
+geschwindigkeit wichtiger daher senden der Pakete mit udp statt tcp fire and forget
+Dynamischer synchroansatz vs statischer komplettsynchro
+Synchronisation Fehlertolerant -> geht synchropaket verloren nie ein problom für den zustand der db da db dann nicht inkonsitent und bei nächsten synchronisation wird wieder der gleiche fehler gefunden  
+
+-> konzpt let it fail fehlertolerant 
+-> Selbsheilender process
+
+einfaches erstellen von neuen indexen
+
+Datenbanksystem von ausen transparent
+
+Horizontale Skalierung (scale out)  Vertikale Skalierung (scale up)
+
+ausfallsicherheit
+
+verteiltes system
+
+geschwindigkeit -> in memory
+
+loadbalancing
+
+nachteil: hoher aufwand an hardware, koordination des szstems, schwierig gut performance daher udp -> prob synchro -> synchro anforderungen
 
 \section{funktionale Anforderungen}
 einfügen
@@ -406,28 +436,33 @@ Anforderungen:
 \todo[inline]{Definition: formale Darstellung der Anforderung mit Hilfe geeigneter Methoden}
 \todo[inline]{Entwurf: Diskussion von Lösungsansätzen, Modellierung der konzipierten Lösung}
 
-		\begin{enumerate}[1.]
-			\item Modellierung
-			\item Systemarchitektur
-		\end{enumerate}
-		
 \section{Konzept des Datenbanksystem}
-Ziel des
-mehrer redundante räumlich getrennte mit dem internet verbundene von einander unabhängige gleichrangige vollredundante Datenbanken
+\label{sec:DBSystemConcept} 
+Um den in der Anfordrungsanalyse beschrieben Kriterien zu erfüllen ist das Datenbanksystem  in verschiedene Komponenten gegliedert. Das klare Aufteilung der einzelnen Funktionen des Systems in Komponenten soll den Anspruch an Ausfallsicherheit und horizontaler, wie vertikaler Skalierung ermöglichen. So werden die Daten die das System persitieren soll in mehreren Zellen redundant abgelegt. Die Anzahl der Zellen bestimmt die Ausfallsicherheit des System. So kann mit mehr Zellen eine höhere Ausfallsicherheit gewährleistet werden aber gleichzeitig steigt damit auch die Kosten, der Aufwand das System zu betreuen und die Komplexität sowie die Koordination von System internen Ablaufen. Durch die Verwendung separater Hardware Ressourcen und einer Aufteilung in räumlich getrennten Standorten macht macht das System zudem Toleranz gegen über Hardwareausfällen oder nicht System internen Problemen wie z.B. Ausfall der Stromversorgung. Ein Partitionieren der Daten in kleine Einheiten in den Datenbankzellen wird in dieser Arbeit nicht weiter untersucht ist aber eine sehr gute Möglichkeit das System zu optimieren. So ist damit eine horizontale Skalierung des Datenbanksystem möglich da durch Unterteilung der Daten in der Zelle diese einfach auf mehrere Resourcen verteilt werden können. Durch eine Optimierung der Hardwareressourcen der Zelle oder ihrer Teile kann das System zudem auch vertikal noch oben Skaliert werden. Durch die Aufteilung der Daten auf verschiedene Instanzen ist außerdem  ein verteilen der Last auf diese möglich. Dies wird durch eine Datenbankmanagmentkomponente koordiniert. Das Datenbanksystem ist nach Außen transparent. Das bedeute das alle internen Vorgänge sowie Aufbau nach Außsen hin nicht sichtbar sind. Das System liefert ein Reihe an von außen aufrufbarer Funktionen wie diese aber durch intern Vorgänge bewältigt werden oder wie der Aufbau des Datenbanksystem konzipiert ist ist nach außen hin nicht ersichtlich.
+\begin{figure}[h!]
+ 	\centering
+    \includegraphics[width=0.8\textwidth]{bilder/uml_deployment_dia.png}
+    \caption{Synchronisationsprozess}
+\end{figure}
+Eine weitere essentielle Komponente ist der \enquote{Accesslayer}. In diesem werden für neue Daten oder Veränderungen eindeutige \ac{ID}s erzeugt. Jedem neuen Datensatz wird eine eindeutige Nummer zugewiesen die ihn adressiert sowie eine Nummer die seine Stand wieder gibt. Neue \ac{ID}s steigen mit jeder weiterem Generierung. wird ein neuer Datensatz eingefügt oder verändert sorgt der \enquote{Accesslayer} dafür das dieser adressiert sowie an alle Datenbankzellen gesandt wird.Um auch hier Ausfallsicherheit und eine Balancierung von Last zu ermöglichen ist es möglich das mehrere \enquote{Accesslayer} parallel arbeiten. Die Koordination dieser ist eine weitere nicht triviale Aufgabe wird aber nicht weiter im Rahmen dieser Arbeit betrachtet.\\\\
+\todo[inline]{Hinleitung zu Synchrobedarf da udp übertragung wegen performance} 
+ Datenbanken -> in memory
 Datenbanken system transparent
-beschreibung access layer
 uml: Komponenten diagramm
 Wo beschreibung der gundlegenden funktionen
 grundlegende konzept mehrer Datenbanken mit gleichen Daten -> bedarf von synchronisation damit Daten konsistent bleiben
 
 \section{Konzept der Datenbank}
-Die Grundlegende Idee der Datenbank ist, nicht wie in relationalen Datenbanken Daten durch Tabellen zu gruppieren, sondern durch viele verschiedene Indexe Daten je nach benötigten Kriterien  zugänglich zu machen. So kann jederzeit durch bilden von neuen Indexen auf neue Anforderungen an die Datenbank reagiert werden.\\
+\label{sec:DBConcept} 
+%TODO in mermory!
 
-Neue Datensätze erhalten bei ihrer zentralen Erzeugung im \enquote{Access Layer} eine eindeutige, aufsteigende, Identifikationsnummer. Die Nummer ist in allen Datenbanken gleich, verändert sich nie und adressiert den Datensatz bis dieser gelöscht wird. Eine weitere Nummer, die \enquote{Change ID}, symbolisiert den Stand des Datums. Wenn das Datum angelegt wird sind Identifikationsnummer und \enquote{Change ID} identisch. Wird der Datensatz verändert wird diesem immer größer werden \enquote{Change ID} zu gewiesen. Somit lässt sich leicht erkennen ob Daten verändert wurden oder sich noch ihrem Ursprungszustand befinden. Besonders praktisch ist diese beim Vergleichen von einem Datensatz in unterschiedlichen Datenbanken. Durch vergleichen der \enquote{Change ID} kann so sehr schnell ermittelt werden welche von Beiden aktueller ist und der Unterschied ausgeglichen werden.\\
+Die Grundlegende Idee der Datenbank ist, nicht wie in relationalen Datenbanken Daten durch Tabellen zu gruppieren, sondern durch viele verschiedene Indexe Daten je nach benötigten Kriterien zugänglich zu machen. So kann jederzeit durch bilden von neuen Indexen auf neue Anforderungen an die Datenbank reagiert werden.\\
 
-Für die Identifikationsnummer als auch \enquote{Change ID} wird eine eigener Index gepflegt. Hierfür wird der sich besonders gut dafür eignende, in \autoref{sec:ebTreeGrundlagen} beschriebene, \ac{EB-Baum} verwendet, da dieser auf das nach Größe sortiertem Verwalten von Ganzzahlartigen Schlüsseln optimiert ist. In die Datenbank eingefügte Datensätze werden in einem Container, dem \enquote{EbTreeDataObject}, gekapselt. Dieses enthält zum einen die Identifikationsnummer, die aktuelle \enquote{Change ID} sowie eine Referenz auf das Datum. Wird nun in die Datenbank ein Datensatz eingefügt wird dieser mit der Identifikationsnummer in den dazu gehörigen \enquote{ID-Baum} und mit der \enquote{Change ID} in dem \enquote{Change ID-Baum} eingefügt. Das Blatt jedes Baumes hält somit die entsprechende Nummer und den Container. Es lässt sich somit leicht auflösen welche \enquote{Change ID} mit welcher Identifikationsnummer und umgekehrt verbunden ist. \\\\
+Neue Datensätze erhalten bei ihrer zentralen Erzeugung im \enquote{Access Layer} eine eindeutige, aufsteigende, \ac{ID}. Die Nummer ist in allen Datenbanken gleich, verändert sich nie und adressiert den Datensatz bis dieser gelöscht wird. Eine weitere Nummer, die \enquote{Change ID}, symbolisiert den Stand des Datums. Wenn das Datum angelegt wird sind Identifikationsnummer und \enquote{Change ID} identisch. Wird der Datensatz verändert wird diesem eine immer größer werdende \enquote{Change ID} zu gewiesen. Somit lässt sich leicht am Wert der \enquote{Change ID}  erkennen ob Daten verändert wurden oder sich noch ihrem Ursprungszustand befinden. Besonders praktisch ist dies beim Vergleichen von Datensätzen in unterschiedlichen Datenbanken. Durch vergleichen der \enquote{Change ID} kann so sehr schnell ermittelt werden welche von Beiden aktueller ist und der Unterschied ausgeglichen werden.\\
+
+Für die \ac{ID}, als auch \enquote{Change ID}, wird eine eigener Index gepflegt. Hierfür wird der sich besonders gut dafür eignende, in \autoref{sec:ebTreeGrundlagen} beschriebene, \ac{EB-Baum} verwendet, da dieser auf das nach Größe sortiertem Verwalten von Ganzzahlschlüsseln optimiert ist. In die Datenbank eingefügte Datensätze werden in einem Container, dem \enquote{EbTreeDataObjekt}, gekapselt. Dieses enthält zum einen die \ac{ID}, die aktuelle \enquote{Change ID} sowie eine Referenz auf die Daten. Wird nun in die Datenbank ein Datensatz eingefügt wird dieser mit der \ac{ID} in den dazu gehörigen \enquote{ID-Baum} und mit der \enquote{Change ID} in dem \enquote{Change ID-Baum} eingefügt. Das Blatt jedes Baumes hält somit die entsprechende Nummer und den Container. Es lässt sich somit leicht auflösen welche \enquote{Change ID} mit welcher \ac{ID} und umgekehrt verbunden ist. \\\\
 Beim Verändern eines Datensatzes wird die alte \enquote{Change ID} aus dem \enquote{Change ID-Baum} gelöscht und die neue \enquote{Change ID} wieder eingefügt. Da der \ac{EB-Baum} seine Schlüssel der Größe nach von links nach rechts im Baum sortiert und neu erstellte Schlüssel immer größer werden. Befinden sich neu eingefügte Elemente im \enquote{ID-Baum} sowie neu veränderte Elemente im \enquote{Change ID-Baum} ganz rechts in der Baumstruktur.\\\\
-Soll ein Datum gelöscht werden werden nicht einfach die damit verknüpften Nummern und der Datensatz gelöscht. Beim Löschen muss sichergestellt werden dass das Datum aus allen Datenbanken entfernt wird da dieses sonst in der nachfolgend beschriebenen Synchronisationsprozess wieder hergestellt wird. Falls der Datensatz auf einer Seite der an Synchronisation beteiligten Datenbanken fehlt und auf der anderen Vorhanden ist lässt sich nicht feststellen ob dieses Ungleichgewicht durch ein verlorenes Einfügen oder Löschen zu Stande gekommen ist und ob das Element auf der einen Seite gelöscht oder auf der anderen wieder hergestellt werden soll. Daher werden nur die Daten des \enquote{EbTreeDataObject} gelöscht und eine neue \enquote{Change ID} eingefügt. Das Vollständige Löschen von Identifikationsnummer und \enquote{Change ID} aus beiden Bäumen sowie des \enquote{EbTreeDataObject} erfolgt in einem gesonderten Löschprozess der sicherstellt das diese Veränderung an jeder Datenbank vorgenommen wird.
+Soll ein Datum gelöscht werden werden nicht einfach die damit verknüpften Nummern und der Datensatz gelöscht. Beim Löschen muss sichergestellt werden dass das Datum aus allen Datenbanken entfernt wird da dieses sonst in der nachfolgend beschriebenen Synchronisationsprozess wieder hergestellt wird. Falls der Datensatz auf einer Seite der an Synchronisation beteiligten Datenbanken fehlt und auf der anderen Vorhanden ist lässt sich nicht feststellen ob dieses Ungleichgewicht durch ein verlorenes Einfügen oder Löschen zu Stande gekommen ist und ob das Element auf der einen Seite gelöscht oder auf der anderen wieder hergestellt werden soll. Daher werden nur die Daten des \enquote{EbTreeDataObjekt} gelöscht und eine neue \enquote{Change ID} eingefügt. Das Vollständige Löschen von \ac{ID} und \enquote{Change ID} aus beiden Bäumen sowie des \enquote{EbTreeDataObjekt} erfolgt in einem gesonderten Löschprozess der sicherstellt das diese Veränderung an jeder Datenbank vorgenommen wird.
 
 \section{Synchronisation zwischen Datenbanken}
 \label{sec:eBTreeSynchronisation}
@@ -436,77 +471,91 @@ Soll ein Datum gelöscht werden werden nicht einfach die damit verknüpften Numm
     \includegraphics[width=1\textwidth]{bilder/SynchroProzess.png}
     \caption{Synchronisationsprozess}
 \end{figure}
-Durch ein Vergleichen der Identifikationsnummern und \enquote{Change IDs} der Datensätze in den sich synchronisierenden Datenbanken kann einfach festgestellt werden welche Daten fehlen und falls diese vorhanden auf welcher Seite diese aktueller sind. Ein Vergleichen der gesamten Datenbanken jedoch, gerade wenn diese unter hoher Last stehen und sehr viele Datensätze verwalten, verbraucht viele Ressourcen. Ab einem gewissen Grad von Last durch Operationen und Masse an Daten ist dies nicht mehr möglich. Ein komplettes Abgleichen nimmt in diesem Fall so viel Zeit in Anspruch dass durch neue Operationen wieder ein Ungleichgewicht zwischen den Datenbanken entstehen würde.\\\\
+Durch ein Vergleichen der \ac{ID}s und \enquote{Change IDs} der Datensätze in den sich synchronisierenden Datenbanken kann einfach festgestellt werden welche Daten fehlen und falls diese vorhanden auf welcher Seite diese aktueller sind. Ein Vergleichen der gesamten Datenbanken jedoch, gerade wenn diese unter hoher Last stehen und sehr viele Datensätze verwalten, verbraucht viele Ressourcen. Ab einem gewissen Grad von Last durch Operationen und Masse an Daten ist dies nur schwer möglich. Ein komplettes Abgleichen nimmt in diesem Fall so viel Zeit in Anspruch dass durch neue Operationen wieder ein Ungleichgewicht zwischen den Datenbanken entstehen wird.\\\\
 Daher gilt es eine Synchronisationsmethodik zu finden die zum einen in der Lage ist schnell kleine Unterschiede als auch in einer längeren Zeitspanne Datenbanken, die sich auf völlig verschiedenen Ständen befinden, auszugleichen.
-Die \enquote{Change IDs}, die zum Vergleich während der Synchronisation gepflegt werden, werden in jeder Datenbank in einem \ac{EB-Baum} gehalten. Die Möglichkeit des Vergleichen von Zweigen unterhalb jedes Knotens ist daher von großem Vorteil. Um dies Möglich zu machen wird für jeden Knoten eine den Zustand seiner beiden Kindobjekte repräsentierende Nummer, die \enquote{Node Change ID}, errechnet. Dazu werden die Nummern der Kindobjekte, \enquote{Change IDs} falls das Kind ein Blatt oder \enquote{Node Change ID} falls das Kind ein Knoten ist, durch eine binäre Oderoperation verbunden. Während des Synchronisationsprozesses senden sich beide Seiten sogenannte \enquote{Deltas}. Es werden eine die Position des Elternknoten beschreibenen Ganzzahl, der Bitposition des  Elternknoten, der Bitposition des Elternknoten des Elternknoten  sowie die den Stand wieder gebenden Nummern seiner Kinder. Diese logisch zusammen hängende Dreieck wird als \enquote{Delta} bezeichnet. 
-
-Durch die die Position des Deltas beschreibende Ganzzahl kann der Knoten mit dem das Delta verglichen werden soll in der anderen Datenbank gefunden werden. Bei der Lokalisierung des zu vergleichenden Knoten wird am obersten Knoten des Baumes begonnen. Je nach dem ob 0 oder 1 in der Adressganzzahl an der binären Stelle der Bitposition des Knoten  gesetzt ist wird das linke oder rechte Kindobjekt weiter behandelt. Dies wird solange wiederholt bis die im Delta übergebene Elternbitebene erreicht und der zu vergleichende Knoten ermittelt ist
-
+Die \enquote{Change IDs}, die zum Vergleich während der Synchronisation gepflegt werden, werden in jeder Datenbank in einem \ac{EB-Baum} gehalten. Die Möglichkeit des Vergleichen von Zweigen unterhalb jedes Knotens ist daher von großem Vorteil. Um dies Möglich zu machen wird für jeden Knoten eine den Zustand seiner beiden Kindobjekte repräsentierende Nummer, die \enquote{Node Change ID}, errechnet. Dazu werden die Nummern der Kindobjekte, \enquote{Change IDs} falls das Kind ein Blatt oder \enquote{Node Change ID} falls das Kind ein Knoten ist, durch eine \enquote{binäre XOR Operation} verbunden. Während des Synchronisationsprozesses senden sich beide Seiten sogenannte \enquote{Deltas}. Es werden eine die Position des Deltaknoten beschreibenen Ganzzahl, die Bitebene des  Deltaknoten, der Bitebene des sich ber dem Deltaknoten befindenden Elternknoten, sowie die deren Zustand wieder gebenden Nummern seiner Kinder. Die übertragenen Werte bilden beschreiben das logisch zusammen hängende Dreieck aus Knoten und zwei Kindern. Daher wird es als \enquote{Delta} bezeichnet.\\
 \begin{wrapfigure}{r}{0.5\textwidth}
   \begin{center}
-    \includegraphics[width=.6\linewidth]{bilder/SynchroDelta.png}
+    \includegraphics[width=.8\linewidth]{bilder/SynchroDelta.png}
   \end{center}
  \caption{Deltaobjekt}
 \end{wrapfigure}
-Die Synchronisation kann von jeder Datenbank angestoßen werden. Eine Möglichkeit dies zu Koordinieren ist dass jede Datenbank zufällig in einem festgelegtem Zeitintervall zu synchronisieren beginnt. Das Ablaufen von parallelen Synchronisationen ist dabei nicht Problematisch \unsure{SPW korrekt?}. Die Synchronisation besteht aus zwei Phasen. 
+Durch die die Position des Deltas beschreibende Ganzzahl kann der Knoten mit dem das Delta verglichen werden soll in der anderen Datenbank gefunden werden. Bei der Lokalisierung des zu vergleichenden Knoten wird am obersten Knoten des Baumes begonnen. Je nach dem ob 0 oder 1 in der Adresszahl an der binären Stelle der Bitposition des zu durchlaufenden Knoten gesetzt ist wird das linke oder rechte Kindobjekt weiter behandelt. Dies wird solange wiederholt bis die im Delta übergebene Bitebene des Deltaelternknoten unterschritten und der sich dort befindliche zu vergleichende Knoten ermittelt ist.
+Wird nach dem Vergleichen der Deltas festgestellt dass die\enquote{Node Change IDs} der linken Knoten gleich sind und die der rechten Knoten ungleich. Soll ab jetzt dieser Knoten nach rechts durchlaufen werden. Dazu wird in der binären Representation des Adresswertes an der Bitstelle die der Knoten darstellt eine 1 gesetzt und von nun an bei allen weiteren Durchläufen dieses Synchronisationsprozesses an diesem Knoten das rechte Kindobjekt behandelt.
+Die Synchronisation kann von jeder Datenbank angestoßen werden. Eine Möglichkeit dies zu Koordinieren ist dass jede Datenbank zufällig in einem festgelegtem Zeitintervall zu synchronisieren beginnt. Es ist Möglich das sich die Datenbank während des Synchronisationsprozess verändert. Die Synchronisation besteht aus zwei Phasen. 
 \subsection{Synchronisation Phase 1} 
 In der Ersten Phase gilt es den Unterschied zu finden der sich in beiden Bäumen am weitesten links befindet und somit die älteste Unterschied zwischen den Datenbanken darstellt. Da im laufenden Betrieb auf der rechten Seite des Baumes viele Veränderung statt findet soll immer der Unterschied der davon am weitesten Entfernt liegt zu erst behoben werden. Daten die sich oft Verändern sind sehr weit rechts im Baum zu finden und da somit besteht die Chance dass sich mögliche verlorene Veränderungen bei einer erneuten Veränderung selbst ausgleichen.
-Die die Synchronisation startende Datenbank sendet ein Delta des höchsten Knoten gekapselt in einer Synchronisationsanfrage an die andere Datenbank. Diese lokalisiert das Delta und vergleicht die Nummer des linken Kindobjektes des erhaltenen Delta mit dem  im eigenen Baum gefundenen linken Kindobjekt. Sind diese gleich werden die rechten Kindobjekte verglichen. Wird dabei kein Unterschied erkannt sind die Datenbanken synchron und der Synchronisationsvorgang ist abgeschlossen. Falls aber ein Unterschied lokalisiert werden kann wird mit einem Delta bestehend aus dem sich unterscheidenden Kindobjektes geantwortet. Die sich synchronisierenden Datenbanken spielen mit dem Senden der Deltas eine Art von \enquote{Ping-Pong} bis der am weiten links liegende Unterschied gefunden ist. 
-
-
+Die mit der Synchronisation beginnende Datenbank sendet ein Delta des höchsten Knoten gekapselt in einer Synchronisationsanfrage an die andere Datenbank. Diese lokalisiert den Knoten mit dem das Delta abgeglichen werden soll und vergleicht die Nummer des linken Kindobjektes des erhaltenen Delta mit dem linken Kindobjekt des eigenen Knotens. Sind diese gleich werden die rechten Kindobjekte verglichen. Wird dabei kein Unterschied erkannt sind die Datenbanken synchron und der Synchronisationsvorgang ist abgeschlossen. Falls aber ein Unterschied lokalisiert werden kann wird mit einem Delta bestehend aus dem sich unterscheidenden Kindobjektes geantwortet. Die sich synchronisierenden Datenbanken spielen mit dem Senden der Deltas eine Art von \enquote{Ping-Pong} bis der am weiten links liegende Unterschied gefunden ist.\\\\
 Beim Abgleichen der Deltas kommt es zu unterschiedlichen Vergleichsfällen die vom Synchronisationsalgorithmus separat behandelt werden müssen:
-\subsubsection{Datenbanken Synchron}
 
-\subsubsection{Unterschied Links}
+\subsubsection{Unterschied Links/Rechts}
+\label{sec:SynchroDiffLeftOrRight}
+Die Knotenstruktur in den \enquote{Change ID-Bäumen} beider Datenbanken ist bis zum ersten Unterschied identisch. Der Synchronisationsalgorithmus läuft Delta für Delta die Bäume entlang und navigiert dabei je nach gefundenem Unterschied nach Links oder Rechts bis ein Blatt gefunden wird. Es besteht aber nun die Möglichkeit das an der Stelle wo das Blatt gefunden wurde sich im anderen Baum ein Zweig befindet in dem das Blatt bereits vorhanden ist, \autoref{fig:Case1TreeB,B*}. Beim Vergleichen der \enquote{Change IDs} wird ein Unterschied festgestellt doch dieser befindet sich im Unterzweig der anderen Datenbank. Bevor dieser aber lokalisiert werden kann wird in der Datenbank ohne den Unterzweig bereits dass Blatt gefunden. Daher wird sobald ein Blatt gefunden wird dessen ID der anderen Seite mitgeteilt und dort geprüft ob diese bereits vorhanden ist. Falls das Blatt noch nicht vorhanden ist werden nun die kompletten Daten des Blattes angefordert und eingefügt.\begin{wrapfigure}{r}{0.5\textwidth}
+  \begin{center}
+    \includegraphics[width=0.9\linewidth]{bilder/Case1TreeA.png}
+  \end{center}
+ \caption{Baum A}
+ \label{fig:Case1TreeA}
+\end{wrapfigure} Ist das Blatt aber bereits im Baum wird an die Position des Unterzweig gelaufen und dort das linkeste Blatt betrachtet. Ist dieses nicht das gefundene Blatt wurde der sich am weitesten Links befindende Unterschied gefunden und der Datensatz zum Einfügen an die andere Datenbank gesandt. Ist das linkeste Blatt aber das Gefundene ist der linkeste Unterschied der nächste rechte Nachbar und kann ausgetauscht werden.
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=0.9\linewidth]{bilder/Case B Baeume.png}
+  \end{center}
+ \caption{Baum B, B*}
+  \label{fig:Case1TreeB,B*}
+\end{figure}
 
-\subsubsection{Unterschied Rechts}
+\subsubsection{Behandeln von verschieden vielen Bitebenen} 
 
-\subsubsection{Bitebenenunterschied mit Unterschied Rechts}
+Je nach dem wie groß sich die Bäume unterscheiden so verschieden ist auch die Strukturen an Knoten. Das führt so folgender Problematik. Der älteste gesuchte Unterschied liegt links im Baum doch Fehlen ebenfalls andere, neuere Werte und somit auch die Knoten die mit ihnen erzeugt werden. Ein einfaches \enquote{Delta Ping-Pong} Knoten für Knoten und dabei Bitebene für Bitebene ist daher nicht möglich. Auch ist davon Auszugehen das es Möglich ist das auf beiden Seiten Bitebenen fehlen. Dies führt zu einer Vielzahl an Möglichkeiten in denen sich bei Seiten unterscheiden können. Um die Lücken an Knoten zu erkennen und zu behandeln ist in den Deltaobjekten die Bitebene des Deltaknoten sowie die Bitebene des obehalb liegenden Elternknoten enthalten.\\\\
+Zu beginn eines Synchronisationsschrittes wird im Baum der Knoten ermittelt der sich unterhalb der Bitebene des Elternknoten des erhaltenen Deltas befindet. Dazu wird der Baum mit der Adresszahl solange durchlaufen bis die Bitebene des betrachteten Knoten die Bitebene des Elternknoten des erhaltenen Deltas unterschreitet. Nun wird geprüft ob die Bitebene des gefundenen Knoten gleich der  Bitebene des erhaltenen Deltaknotens ist. Ist dies der Fall wird mit der im oberen \autoref{sec:SynchroDiffLeftOrRight} beschriebenen Prozedur verfahren. Unterscheiden sich die Bitebenen führt dies zu zwei Möglichkeiten. 
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=0.9\linewidth]{bilder/case 2 a* B**.png}
+  \end{center}
+ \caption{Bäume mit verschieden vielen Bitebenen}
+\end{figure}\\
+Die Bitebene des gefundenen Knotens ist kleiner als die des Deltaknoten. Zwischen den beiden Knoten befindet sich Loch in dem sich noch noch nicht synchronisierte Blätter und dazu gehörige Knoten befinden. Doch diese sollen vom Algorithmus erst später repariert werden da diese neuer und zu erst der ältesten Unterschied behoben werden soll. Daher gilt es das Loch zu überspringen. Dazu sendet die Seite mit dem tieferen Knoten ein spezielles Delta zurück welches das nächste linke Delta unterhalb des erhaltenen Delta anfordert. Dies wird solange wiederholt bis auf beiden Seiten die selbe Bitebene erreicht ist oder falls die kleine Bitebene im anderen Baum nicht vorhanden ein Blatt gefunden wird. Ist auf beiden Seiten die gleiche Bitebene erreicht können die Kinderobjekte wie im oberen \autoref{sec:SynchroDiffLeftOrRight} beschrieben verglichen werden.
+Falls aber die Bitebene des gefundenen Knoten größer ist als die des Deltaknotens wird ein Delta aus dem gefundenen Knoten gebildet und zurück gesandt. Damit werden einfach die Seiten getauscht und der gerade beschriebene Fall tritt ein. Diese Methodik wird ebenfalls genutzt um mit Synchronisation zu beginnen. Einer der Datenbanken wird ein manipuliertes Deltaobjekt gesandt. Dieses trägt als Absender die andere Datenbank. Die Werte der Bitebenen von Deltaknoten und Elternknoten sind negativ. Somit wird zuerst der oberste Knoten lokalisiert. Da dessen Ebenenbit positiv ist und somit größer als der erhaltene negative Deltawert wird der oberste Knoten als Delta an die andere Datenbank gesandt und ein Synchronisationsschritt beginnt. \\\\
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=0.9\linewidth]{bilder/case 2 A B1.png}
+  \end{center}
+ \caption{Bäume mit verschieden vielen Bitebenen}
+\end{figure}
+Ein weiterer Sonderfall tritt ein wenn der Knoten und seine unter im liegenden Kinder des Baumes mit fehlenden Knoten im anderen Baum bereits vollständig enthalten ist und sich der gesuchte Unterschied oberhalb davon befindet. Während des angleichen der Bitebenen werden keine \enquote{Change IDs} verglichen. Erst wenn auf beiden Seiten die selbe Bitebene erreicht ist wird wieder nach Unterschieden geprüft und in diesem Fall  Links und Rechts keine Unterschiede gefunden werden was die Bäume als synchron erscheinen lassen wird. Daher muss immer beim Überspringen des Bitebenenlochs bevor das nächst tiefere Delta angefordert wird überprüft werden ob dieses bereits die selbe \enquote{Change ID}  hat wie der Knoten. Ist dies der Fall liegt der gesuchter Unterschied ganz links im rechten Kindobjektzweig oder ist das Kindobjekt selbst.
 
-\subsubsection{Bitebenenunterschied mit fehlenden Ebenen}
+\todo[inline]{Special case node nicht im anderen baum}
 
-
-\subsubsection{Check if Leaf is unique}
 
 \subsection{Synchronisation Phase 2}
-
-
--> suche nach linkestem unterschied warum 
-
--> finden von lost inserts und lost updates		
--> konzpt let it fail fehlertolerant 
--> Selbsheilender process
+Nach Ablauf der ersten Synchronisationsphase ist die sich, in den \enquote{Change-ID Bäumen}, am weitesten Links befindende, unterscheidende \enquote{Change-ID} gefunden. Nun sendet die Datenbank in der sich diese befindet das gesamte \enquote{EbTreeDataObjekt} auf welches die \enquote{Change-ID} referenziert an die andere Datenbank in der die \enquote{Change-ID} nicht vorhanden ist. Durch die im \enquote{EbTreeDataObjekt} enthaltene \ac{ID} kann nun im  \enquote{ID-Baum} geprüft werden ob diese enthalten ist. Falls dies nicht der Fall ist die komplette Einfügeoperation des Datensatzes verloren gegangen und dieser muss nun nachträglich in beide Bäume eingefügt werden. Ist es Möglich die \ac{ID} zu lokalisieren ist dass \enquote{EbTreeDataObjekt} bereits in beiden Datenbanken vorhanden aber auf einem unterschiedlichem Stand. Nun gilt es durch einen Vergleich der beiden \enquote{Change-IDs} heraus zu finden auf welcher Seite der Datensatz aktueller ist und dies auszugleichen. Ist die erhaltene \enquote{Change-ID} größer als die Eigene wird der eigene Datensatz aktualisiert. Ist aber die erhaltene \enquote{Change-ID} kleiner kann der eigene Datensatz als Update an die andere Datenbank gesandt werden. Der Synchronisationsschritt ist abgeschlossen. Egal ob eine veraltete oder aktuelle  \enquote{Change-ID} gefunden wird jeder Synchronisationsschritt führt zum Ausgleich eines Unterschiedes.
 	
 \section{Architektur des Prototypen}
-uml\\ package diagram komponenten diagram
-aufteilung komponenten und simulations\\
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=1.0\linewidth]{bilder/prototyp_component_diagram.png}
+  \end{center}
+ \caption{UML Komponentendiagramm des Prototypen}
+\end{figure}
+\todo[inline]{ turn picture}
+Der in dieser Arbeit erstellte Prototyp besteht grundlegend aus zwei Teilen. Er besteht zum einen aus den Komponenten des in \autoref{sec:DBConcept} beschriebenen Datenbankkonzeptes und der in \autoref{sec:eBTreeSynchronisation} erklärten Synchronisation zwischen zwei Instanzen der Datenbank. Zum anderen einer Simulationsumgebung mit welcher die Funktionalität des Datenbanksystem getestet werden kann. Die Synchronisation zwischen den einzelnen Datenbankinstanzen kann hier ebenfalls getestet und analysiert werden. Durch verschiedene Initialisierungen des Datenbanksystem und dem erzeugen von Last  können verschiedene Szenarios erzeugt und die Leistung des Systems bewertet werden. \\
 
-Der in dieser Arbeit umgesetzte Teil des Datenbankkonzeptes besteht\\
-Der in dieser Arbeit erstellte Prototyp besteht grundlegend aus zwei Teilen. Zum einen den Komponenten der grundlegenden Funktionen des hier implementierten Datenbankprototypen und der Synchronisation zwischen zwei Instanzen der Datenbank. Zum anderen einer Simulationsumgebung mit welcher die Synchronisation zwischen den Datenbanken in verschiedenen Szenarios beeinflusst und die Leistung getestet werden kann. \\
+Die Applikation ist zum Teil als Actorsystem umgesetzt. So wird jede Datenbank, als auch der \enquote{CommunicationLayer}, welcher als Bindeglied zwischen den Komponenten fungiert, durch einen Aktor repräsentiert.
+Das Senden von Actornachrichten ähnelt dem Senden von IP-Paketen zwischen zwei Datenbanken an verschiedenen Standorten. Wann welche Nachricht und in welcher Reihenfolge bei welcher Datenbank ankommt ist nicht vorhersehbar. Verlust oder Verspätung von Paketen und die daraus resultierende Ungleichheit der Datenbanken lassen sich so gut simulieren.
 
-Teil der Applikation ist einem Actorsystem in dem jede Datenbank durch einen Aktor repräsentiert wird.
-Das Senden von Actornachrichten zwischen den Datenbanksystem ähnelt dem Senden von TCP/IP-Paketen zwischen zwei Datenbanken an verschiedenen Standorten. Wann welche Nachricht und in welcher Reihenfolge bei welcher Datenbank ankommt ist nicht vorhersehbar. Verlust oder Verspätung von Paketen und die daraus resultierende Ungleichheit der Datenbanken lassen sich so gut simulieren.
-Jeden Datenbank wird durch einen Actor repräsentiert und kann Nachrichten mit neuen Daten, Änderungen oder Synchronisationsanfragen erhalten und senden. Zwischen den Datenbankaktoren befindet sich, als Teil der Simulationsumgebung, ein Kommunikationsebene. In dieser können  Verlust und Verspätung von Paketen gesteuert werden.
+ Zwischen den Datenbankaktoren befindet sich, als Teil der Simulationsumgebung, ein Kommunikationsebene. In dieser können  Verlust und Verspätung von Paketen gesteuert werden.
 
-
-senden der nachrichten zustandslos
 
 \subsection{Datenbankkomponenten}
-access layer
-baeme
-datenbankactor
+Der Prototyp setzt einen Teil der in \autoref{sec:DBSystemConcept} beschriebenen Komponenten um. Die Generierung von \ac{ID}s die neue Daten zu adressieren und den Stand von Aktualisierungen abbilden werden in einer Basisimplementierung des \enquote{Accesslayer} generiert. Diese werden mit den Daten in einem \enquote{EbTreeDataObjekt} gekapselt und alle Datenbankzellen gesandt. Jeden Datenbankzelle wird durch einen Actor repräsentiert und kann Nachrichten mit neuen Daten, Änderungen oder Synchronisationsanfragen erhalten und senden. Im Rahmen dieser Arbeit werden zwei Datenbankzellen verwendet und Operationen wie Einfügen, Aktualisieren oder Löschen sowie die Synchronisation zwischen beiden getestet. Die Datensätze werden in einer Erweiterung des klassischen \ac{EB-Baum} gehalten.
 
 \subsection{Simulationskomponenten}	
-\subsubsection{Simulationsmaster}
-\subsubsection{Kommunikationslayer}
+Die Komponenten der Simulationsumgebung setzen auf den Datenbankkomponenten auf. Zwischen den zwei Datenbankzellen und dem \enquote{Accesslayer} wird der \enquote{CommunicationLayer} zwischen geschoben. Der \enquote{CommunicationLayer} ist wie die zwei Datenbankzellen ein Actor. Durch ihn läuft die gesamte Kommunikation aller Komponenten. Werden neue Daten Eingefügt oder Aktualisiert werden diese vom \enquote{Accesslayer} an den \enquote{CommunicationLayer} übergeben und an die zwei Datenbanken weiter verteilt. Auch die Synchronisation zwischen den beiden Zellen läuft durch \enquote{CommunicationLayer}. Die Daten die im Datenbankystem gekapselt in \enquote{EbTreeDataObjekten} oder \enquote{Deltaobjekten} versandt werden werden als Nachrichten zwischen den Actoren versandt. Jede Nachricht passiert \enquote{CommunicationLayer} und kann somit in diesem beeinflusst werden. So kann ein Prozentwert eingestellt werden mit dem Pakete verloren gehen um das Senden von UDP-Paketen zu simulieren. Auch die Verzögerung von Paketen kann hier simuliert werden. Neue Datensätze oder Aktualisierungen alter Daten werden in einer \enquote{Queue} abgelegt. Soll ein Paket verzögert werden wird es einfach je nach dem wie stark die Verzögerung sein soll weiter hinten eingereiht und somit später versandt.Durch Verlust und Verzögerung werden die Datenbestände in beiden Datenbanken verschieden. Je nach dem wie hoch Verzögerung und Verlust im \enquote{CommunicationLayer} eingestellt sind können in anderen Teilen der Simulationsumgebung die Auswirkungen auf das gesamte System und die Synchronisation ermittelt werden.\\\\
+Start Punkt der Simulationsumgebung als auch des gesamten Prototypen ist der \enquote{SimulationMaster}. In dieser Komponente wird beim Start des Prototypen das Actorsystem initialisiert. Die beiden Datenbankzellen, \enquote{Accesslayer} und \enquote{CommunicationLayer} werden instanziiert, deren Referenzen unter den Komponenten ausgetauscht und das gesamte Datenbanksystem sowie die Simulationsumgebung selbst initialisiert. Aufgabe des \enquote{SimulationMaster} ist es zum einen das System zu initialisieren und zu starten und anschließend eine Reihe verschiedene Simulationen zu ermöglichen. Während der Simulation werden Daten ausgewertet und diese in einem einer CSV-Datei gespeichert. Welche Simulation ausgeführt werden soll kann vom Nutzer in einem einfachen \enquote{Kommandozeileninterface} ausgewählt werden. Je nach Simulation wird nun das Datenbanksystem mit Daten initialisiert und mit der Simulation begonnen. Während der Simulation kann der Inhalt der einzelnen Zellen verändert werden um Last auf das Datenbanksystem zu simulieren. Der \enquote{SimulationMaster} generiert dazu neue Daten oder Änderungen und sendet diese, via dem \enquote{AccessLayer}, an den \enquote{CommunicationLayer}. Dort wird nun entschieden ob das Paket Verloren geht oder Verspätet wird und anschließend dieses in der \enquote{Queue} abgelegt. Der \enquote{SimulationMaster} sendet in gewissen Intervallen ein \enquote{Clocksignal} welches dafür sorgt dass das die Pakete im ersten Feld der \enquote{Queue} versandt werden. Je nach dem wie hoch der Verlust oder die Verspätung von Paketen eingestellt ist ergibt sich ein Unterschied zwischen den Zellen der mit der Synchronisation ausgeglichen werden soll. Die Synchronisation der Datenbankzellen wird ebenfalls im \enquote{SimulationMaster} gestartet. Dazu wird an den \enquote{CommunicationLayer} eine Nachricht gesandt das mit der Synchronisation eines Unterschiedes begonnen werden soll. In der Nachricht ist enthalten welche Datenbank mit der Synchronisation beginnt. Der \enquote{SimulationMaster} wartet nun bis die Synchronisation eines Unterschiedes abgeschlossen ist und fährt mit der Simulation fort.\\\\
+Um den Erfolg der Synchronisation und das Entstehen von Unterschieden bestimmen zu können existiert die Komponente \enquote{TreeCompare}, die den Unterschied beider Datenbanken bestimmt werden kann. Um den Unterschied zu bestimmen werden die \enquote{ID-Bäume} und \enquote{Change ID-Bäume} beider Datenbanken Blatt für Blatt verglichen und gezählt um wie viele Elemente sich Unterscheiden. Beim Vergleichen der \enquote{ID-Bäume} kann festgestellt werden um wie viele Einfügeoperationen und beim Vergleichen der \enquote{Change ID-Bäume} wie viele Aktualisieren sich beide Datenbanken unterscheiden.
 
--> tree compare: als klasse, nachrichten implementation	
-		
-\subsection{Simulation}
-clock
-aufbau des ganzen system
-tree diff
-auswertung
+%TODO eventlogging
 %---------------------------------------------------------------------------------------------------------------------------------------------------
 \chapter{Implementierung}
 \todo[inline]{Realisierung/Umsetzung, Beschreibung der Implementierung, nicht des Programmcodes}
@@ -600,11 +649,19 @@ binaerlogik beschreiben
 			\item Demonstration der Funktionalität
 			\item Auswertung der Ergebnisse
 		\end{enumerate}
+		
+Test run with different start data -> check which case gets more often
+check id length xor problem
+sync ops frequency		
 %---------------------------------------------------------------------------------------------------------------------------------------------------		
 \chapter{Fazit und Ausblick alias Ergebnis}
 \todo[inline]{Zusammenfassung, Bewertung der Ergebnisse, Vergleich mit der Zielstellung, Ausblick}
 
-- optimize Synchro bigger deltas, abkuerzungen
+- spannende basisumsetzung mit viel potenzial da erste hindernisse ueberwunden viel moeglichkeiten der optimierung\\
+- komplexitaets berechnung vs annahme des brutforcealgo -> spannend waeren "delta vs brutforce perfomance test"\\
+- optimize Synchro bigger deltas, abkuerzungen optimierung\\
+
+die anzahl der synchronisationen selbst regulierender algorithmus -> check ob er im Baum vorwaerts nach rechts kommt und beschleinigung\\
 \newpage
 \listoftodos[Notes]
 

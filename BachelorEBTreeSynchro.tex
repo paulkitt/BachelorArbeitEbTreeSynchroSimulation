@@ -437,6 +437,8 @@ datenbanknen können sich verändern
 vergleich gegen austausch von hasches
 synchro senden kleiner pakete finden unterschied dann austauscht groser daten
 synchroschritt findet immer einen unterschied und behebt diesen
+
+Komplette Daten Synchronisation eines neuen Knotens Vorteil kann bereits updates erhalten Nachteil mehr traffic
 \section{funktionale Anforderungen}
 einfügen
 updaten
@@ -492,6 +494,7 @@ Anforderungen:
 
 \section{Konzept des Datenbanksystem}
 \label{sec:DBSystemConcept} 
+%TODO quroum 2/3 knoten erhalten paket antwort an client erfolgreich else unerfolgreich rest kann verloren gehen aber durch synchro einfuegen sicher gestellt
 Um die, in der Anforderungsanalyse beschrieben, Kriterien zu erfüllen, ist das Datenbanksystem  in verschiedene Komponenten gegliedert. Die klare Aufteilung der einzelnen Funktionen des Systems in Komponenten soll einem hohen Anspruch an Ausfallsicherheit gerecht werden, sowie eine horizontale und vertikale Skalierung ermöglichen. So werden die Daten, die das System persitieren, in mehreren Zellen redundant abgelegt. Die Anzahl der Zellen bestimmt die Ausfallsicherheit des Systems. So kann mit einer größeren Anzahl an Zellen eine höhere Ausfallsicherheit gewährleistet werden. Jedoch steigen damit gleichzeitig die Kosten und der Aufwand, das System zu betreuen, sowie die Komplexität und die Koordination von systeminternen Abläufen. Die Verwendung separater Hardware-Ressourcen und eine Aufteilung in räumlich getrennte Standorte machen das System zudem tolerant gegenüber Hardwareausfällen und nicht-systeminternen Problemen, wie z.B. ein Ausfall der Stromversorgung. Ein Partitionieren der Daten in kleine Einheiten in den Datenbankzellen wird in dieser Arbeit nicht weiter untersucht, bietet aber eine sehr gute Möglichkeit, das System zu optimieren. Damit ist eine horizontale Skalierung des Datenbanksystems möglich, da diese durch die Unterteilung der Daten in der Zelle einfach auf mehrere Ressourcen verteilt werden können. Durch eine Optimierung der Hardwareressourcen der Zelle, oder ihrer Teile, kann das System zudem auch vertikal nach oben skaliert werden. Die Aufteilung der Daten auf verschiedene Instanzen ermöglicht außerdem  ein Verteilen der Last. Ein derartiges \enquote{Load Balancing} kann einfach z.B. durch einen Router auf Netzwerktechnikebene koordiniert werden. Das Datenbanksystem ist nach außen transparent. Das System liefert dementsprechend ein Reihe an extern aufrufbarer Funktionen, wie diese aber durch interne Vorgänge bewältigt werden, bzw. wie der Aufbau des Datenbanksystems konzipiert ist, ist nach außen hin nicht ersichtlich.
 \begin{figure}[h!]
         \centering
@@ -763,16 +766,20 @@ Begriffserklärung:
 \begin{description}
 	\item[TPS Transaktionen pro Clock]
 	\item[(delta+request)Synchropkt pro Clock	]
-	\item[Synchronisationsnachrichten] Alle Nachrichten die bei der Synchronisation versandt werden wie Deltapakete, Anfragen nach Datensätzen, sowie der Datensatz der auf der anderen Seite fehlt.
+	\item[Synchronisationsnachrichten] Alle Nachrichten, wie  z.B. Deltapakete oder Anfragen nach Datensätzen, die bei der Synchronisation versandt werden bis ein zu transferierender Datensatz gefunden ist. Ist maximal so groß wie ein UDP-Paket, 576 Byte.
 	\item[Synchronisationszyklus] Vollständige Prozedur des Ausgleichen eines Unterschiedes zwischen den Datenbanken. Beginnt mit dem senden des obersten Deltapaketes einer Datenbankzelle und endet mit dem Austausch eines Datensatzes. Je nach dem wie sich die Struktur der zu vergleichen Baumstrukturen unterscheidet benötigt ein Zyklus mehr oder weniger Synchronisationsnachrichten.
+	\item[Synchronisationslauf] Der Prozess des vollständigen Sznchronisieren zweier sich unterscheidender Datenbanken
+	\item[Synchronisationsoperationen] Operation, wie \enquote{Gehe links/rechts}, \enquote{Überspringe Knoten}, mit denen während jedes Synchronisationszyklus durch die Bäume beider an der Synchronisation beteiliten Datenbankreplikationen navigiert wird
 \end{description}
-
+Synchro startet Random , anzahl an werten 100,1000,.... %TODO
+SynchroPkt size
+DataSize
 
 \newpage
 \section{Statische Tests}
-\subsection{Knoten Change-IDs durch XOR}
+\subsection{Verschiedene Schlüsselgrößen und das Erzeugen der Knoten Change-IDs durch XOR}
 \label{sec:XorError}
-Das Erzeugen der \enquote{Knoten Change-IDs} erfolgt, wie in \autoref{sec:eBTreeSynchronisation} beschrieben, durch die Verknüpfung der IDs der Kinderobjekte des Knotens durch eine \enquote{binäre XOR Operation}. Jedoch kann der Fall eintreten dass mit dieser Operation aus verschiedenen Werten die selbe Zahl erzeugen erzeugt. Dies führt so folgender Problematik: Bei der Generierung der \enquote{Knoten Change-IDs} ist es möglich das in verschiedenen Datenbankzellen für Knoten die selbe \enquote{Knoten Change-ID}  errechnet wird aber ihre Kindobjekte sich unterscheiden. Befinden sich diese Knoten in den Bäumen an der selben Stelle stellt der Synchronisationsalgorithmus bei deren Vergleich fest dass die IDs identisch sind und überspringt somit die darunter liegenden Blätter und Zweige. Dies hat zur Folge das ganze Teile der Bäume nicht verglichen werden und dort liegende Unterschiede nie Erkannt werden. Je größer und je verschiedener die Schlüssel sind um so geringer ist die Wahrscheinlichkeit dass dies passiert. Aber mit der Anzahl der eingefügten Datensätze steigt auch wieder die Wahrscheinlichkeit dass es zu dieser blockierenden Fehlfunktion kommen kann. Dieser Test soll daher ermitteln wie weit, bei verschieden großen Schlüsseln, die Funktionalität, unter Verwendung der \enquote{binäre XOR Operation} zum generieren \enquote{Knoten Change-IDs}, der Synchronisation gewährleistet werden kann.\\\\
+Das Erzeugen der \enquote{Knoten Change-IDs} erfolgt, wie in \autoref{sec:eBTreeSynchronisation} beschrieben, durch die Verknüpfung der IDs der Kinderobjekte des Knotens durch eine \enquote{binäre XOR Operation}. Jedoch kann der Fall eintreten dass mit dieser Operation aus verschiedenen Werten die selbe Zahl erzeugen erzeugt. Dies führt so folgender Problematik: Bei der Generierung der \enquote{Knoten Change-IDs} ist es möglich das in verschiedenen Datenbankzellen für Knoten die selbe \enquote{Knoten Change-ID}  errechnet wird aber ihre Kindobjekte sich unterscheiden. Befinden sich diese Knoten in den Bäumen an der selben Stelle stellt der Synchronisationsalgorithmus bei deren Vergleich fest dass die IDs identisch sind. Die darunter liegenden Blätter und Zweige werden übersprungen. Dies hat zur Folge das ganze Teile der Bäume nicht verglichen werden und dort liegende Unterschiede nie Erkannt werden. Je größer und je verschiedener die Schlüssel sind um so geringer ist die Wahrscheinlichkeit dass dies passiert. Aber mit der Anzahl der eingefügten Datensätze steigt auch wieder die Wahrscheinlichkeit dass es zu dieser blockierenden Fehlfunktion kommen kann. Dieser Test soll daher ermitteln wie weit, bei verschieden großen Schlüsseln, die Funktionalität, unter Verwendung der \enquote{binäre XOR Operation} zum generieren \enquote{Knoten Change-IDs}, der Synchronisation gewährleistet werden kann.\\\\
 Das die beschriebene Blockade eingetreten ist lässt sich nur durch ein vollständiges Vergleichen der Bäume feststellen. Dazu wird der in \autoref{sec:DiffTrees} beschrieben Algorithmus verwendet. Nach jedem die gesamte Synchronisation abgeschlossen ist wird die Anzahl der Unterschiede zwischen den Datenbanken bestimmt. Wird nach Abschluss der gesamten Synchronisation ein Unterschied bestimmt ist der Fehlerfall eingetreten. Die Synchronisation stellt an diesem Punkt fest dass die IDs der Kindobjekte des obersten Knoten auf beiden Seiten identisch sind und somit die gesamte Synchronisation abgeschlossen ist. \\\\
 In diesem Test werden folgende Schlüsselgrößen getestet:
 \begin{description}
@@ -782,34 +789,75 @@ In diesem Test werden folgende Schlüsselgrößen getestet:
 \end{description}
 	
 Wie lange ein Schlüsseltyp das Funktionieren der Synchronisation gewährleisten kann wird mit zwei sich komplett unterscheidenden Datenbankzellen mit 100,500,1000,2000,5000,10000  Datensätzen getestet. Jeder Durchlauf wird dabei 100 wiederholt und anschließend bestimmt wie hoch die Wahrscheinlichkeit in Prozent beträgt das der Fehlerfall beim dem entsprechendem Schlüssel und der Anzahl an Datensätzen eintritt.\\\\
-Ergebniss:
-bild %TODO
-evaluation: alle schlüssel scheiße %TODO
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{bilder/Untitled 1.png}
+    \caption{Wahrscheinlichkeit eines Fehlers bei Verwendung verschiedener Schlüssel}
+\end{figure}
+
+
+\underline{{\bf Ergebnis:}} Bei einer geringen Schlüssellänge wie 48 Bit kommt es es bereits bei einer sehr geringen Menge wie 100 Datensätzen zu dem beschriebenen Fehlerfall. Je größer die Menge an Daten werden je schneller entstehen Blockaden bei der Synchronisation. Ab einer Menge von 2000 verschiedenen Datensätzen ist ein Ausgleich der beiden Replikate nicht mehr möglich. Bei den zwei weiteren, verschieden generierten Schlüsseln treten bei 100 eingefügten Werten keine Fehler auf. Bis zu einer Zahl von 2000 Datensätzen steigt die Warscheinlichkeit einer Blockade nicht besonders stark. Jedoch vergrößert sich diese von dort an massiv und bei einer Anzahl an 10000 verschiedenen Werten ist das Versagen der Sznchronisation in diesem statischen Zustand beider Replikationen sehr wahrscheinlich. Trotz eines genaueren Zeitwertes ist der 64 Bit lange Schlüssel nur geringfügig besser als der 56 Bit Lange Schlüssel. Das Erzeugen der \enquote{Knoten Change-IDs} durch eine \enquote{binäre XOR Operation} ist daher nur bei Verwendung einer möglichst großen Schlüssellänge und wenigen Unterscheidungen beider Replikationen sinnvoll. Für den Betrieb in einem Datenbanksystem mit vielen Daten und dabei auch einer großen Möglichkeit an Unterschied ist dieses Verfahren nicht brauchbar.\\\\
+
+
 \subsection{Vergleich identischer Datenbanken}
 Der Synchronisationsalgorithmus muss in der Lage sein festzustellen wann sich zwei Datenbankzellen unterscheiden und wann diese gleich sind. In diesem Test soll bewiesen werden dass der Algorithmus das Feststellen der Gleichheit der Replikationen erfolgreich bewältigen kann. Dazu werden zwei Datenbankzellen mit je 100, 500, 1000, 2000, 5000, 10000 identischen Datensätzen befüllt und der Algorithmus gestartet. Nachdem eine Seite durch dass Senden des höchsten Deltaobjektes mit dem Synchronisation begonnen hat muss die andere Seite beim Vergleich der höchsten Kinder erkennen dass beide Datenbanken identisch sind. Daher misst dieser Test ob schon nach dem einleiten des ersten Synchronisationszyklus die Gleichheit erkannt wird und wie viele Deltapakete dazu versandt werden. Der Test wird für jede Anzahl zehn mal wiederholt\\\\
-Ergebnis: Es konnte erfolgreich getestet werden dass die Funktionalität der Synchronisierung bei identischen Datenbanken gegeben ist. Es wurden dabei zwei Deltapakete pro Durchlauf gezählt. Ein manipuliertes Paket welches die Synchronisation startet und ein zweites welches die Informationen des ersten Deltas enthält.
+\underline{{\bf Ergebnis:}} Es konnte erfolgreich getestet werden dass die Funktionalität der Synchronisierung bei identischen Datenbanken gegeben ist. Es wurden dabei zwei Deltapakete pro Durchlauf gezählt. Ein manipuliertes Paket welches die Synchronisation startet und ein zweites welches die Informationen des ersten Deltas enthält.
+
+
 \subsection{Synchronisation einer leeren oder rückständigen Datenbankreplikation}
-Es besteht der Anwendungsfall dass eine der an der Synchronisation beteiligten Replikationen signifikant weniger neue Datensätze beinhaltet als die andere Seite. Wird beispielsweise eine neue Datenbankzelle erstellt und in das Datenbanksystem eingefügt um die Redundanz zu erhöhen oder ist eine Replikationen aufgrund von Fehlern oder Wartung längere Zeit nicht erreichbar entsteht zwischen beiden Seiten ein Kluft in den Datenbeständen. Dies ist anders als eine große Menge an verpassten Operationen zur Laufzeit bei denen sich die Bäume an vielen Stellen gering unterscheiden würden, siehe \autoref{ssec:DiffThroughLost}. In diesem Fall sind entweder links die Bäume zu einem gewissen Teil identisch und ab einem gewissen Punkt hat ein Baum auf der rechten Seite mehr Datensätze als der andere. Oder der eine Baum ist leer und der andere hält einen gewissen Datenbestand.
-ziel check aufwand größer als kopie
-sync wird random begonnen
-Ergebnis:
-\subsection{Aufwandsmessung des Synchroalgo bei 1,10,100}
+\label{ssec:EmptyDBTest}
+Es besteht der Anwendungsfall dass eine der an der Synchronisation beteiligten Replikationen signifikant weniger neue Datensätze beinhaltet als die andere Seite. Wird beispielsweise eine neue Datenbankzelle erstellt und in das Datenbanksystem eingefügt um die Redundanz zu erhöhen oder ist eine Replikationen aufgrund von Fehlern oder Wartung längere Zeit nicht erreichbar entsteht zwischen beiden Seiten ein Kluft in den Datenbeständen. Dies ist anders als eine große Menge an verpassten Operationen zur Laufzeit bei denen sich die Bäume an vielen Stellen gering unterscheiden würden, siehe \autoref{ssec:DiffThroughLost}. In diesem Fall sind entweder links die Bäume zu einem gewissen Teil identisch und ab einem gewissen Punkt hat ein Baum auf der rechten Seite mehr Datensätze als der andere. Oder der eine Baum ist leer und der andere hält einen gewissen Datenbestand. Ziel dieses Tests ist zum einen zu beweisen dass ein vollständiges Aktualisieren eines Replikas möglich ist und zu bestimmen wie hoch der Aufwand dabei ist. Eine Datenbankzelle wird mit je 100, 500, 1000, 2000, 5000 oder 10000 Datensätzen befüllt und der Datenaustausch für jeden Synchronisationszyklus gemessen bis die Replikas identisch sind. Dabei wird geprüft ob der in \autoref{sec:XorError} bekannte Fehler eingetreten ist. Falls dies geschieht wird der fehlgeschlagene Durchlauf  wiederholt.\\\\
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \begin{center}
+    \includegraphics[width=1.0\linewidth]{bilder/BarEmptyDbSync.png}
+  \end{center}
+ \caption{Versandte Synchronisationspakete pro Synchronisationszyklus}
+  \label{fig:EmptyDBTraffic}
+\end{wrapfigure}
+\underline{{\bf Ergebnis:}} In mehreren Testläufen konnte erfolgreich bewiesen werden dass eine komplette Aktualisierung eines rückständigen Replikas problemlos möglich ist. Mit der Größe des Datenbestandes steigt die Komplexität der Bäume und somit die benötigte Menge an Synchronisationsnachrichten die Ausgetauscht werden müssen. In \autoref{fig:EmptyDBTraffic} ist gut ersichtlich wie der gesamte Austausch an Synchronisationsnachrichten pro Synchronisationszyklus nahezu linear steigt. Verdoppelt sich die Menge an Datensätzen steigt die benötigte Menge an Synchronisationsnachrichten um ungefähr 1,8 Pakete. Die am meisten in den Synchronisationsnachrichten versandten Operation, beschrieben in \autoref{sec:eBTreeSynchronisation} sind das Überbrücken von fehlenden Knoten, sowie das nach Rechts navigieren im Baum. Mit der Komplexität der Bäume steigt die Häufigkeit dieser Operationen mit an. Wird mit dem in dieser Arbeit beschriebenen Synchronisationsalgorithmus ein neues Replika erstellt ist mit von der Größe des Datenbestandes abhängigen zusätzlichen Bedarf an Übertragungsressourcen nötig.
+
+
+\subsection{Synchronisation sich unterscheidender Datenbanken}
 \label{ssec:DiffThroughLost}
-Test run with different start data -> check which case gets more often, count delta paketen
+In diesem Test soll geprüft werden ob der in dieser Arbeit beschriebene Synchronisationsalgorithmus das Ausgleichen zweier sich um einen gewissen Grade unterscheidender Datenbanken bewerkstelligen kann. Dabei wird zudem die Performance gemessen die durch die verschieden Initialisierungen während des Testes Unterschiedlich ausfällt. Während des Testes wird das Datenbanksystem mit je 100, 500, 1000, 2000, 5000, 10000 Datensätzen initialisiert. Dabei wird die Synchronisation mit einem Unterschied von 1,10,50,100 Prozent zu jeder Datenmenge getestet. Jeder Durchlauf mit jedem Paar aus Datenmenge zu Unterschied zehnmal wiederholt. Dabei wird bestimmt ob eine vollständige Synchronisation durch ein Terminieren des jeweiligen Testdurchlaufs erreicht werden kann. Während jedes Synchronisationslaufes wird bestimmt wie viele Synchronisationsnachrichten pro Synchronisationszyklus benötigt werden und der Durchschnitt des gesamten Synchronisationslaufes gespeichert. Die gesamte Anzahl an, sich je nach in Prozentsatz ergebenden, Unterschieden wird zur Hälfte in jeden Datenbankknoten abgelegt. So haben beide Seiten eine ähnliche Struktur an Knoten in ihren Bäumen aber jede Seite Datensätze die auf der anderen Fehlen. Diese Struktur von Unterschieden kann durch Verlust von Paketen zur Laufzeit des System auftreten. Der Algorithmus muss somit Zyklus für Zyklus korrekt den nächsten sich am weitesten links befindlichen Unterschied in einer der beiden Replikationen ausfindig machen. Der Durchschnitt welche Synchronisationsoperationen wie oft pro Synchronisationszyklus verwendet werden wird ebenfalls erfasst.
+
+\underline{{\bf Ergebnis:}} In jedem Synchronisationslauf jedes Datenmengen zu Unterschied in Prozent Paares konnten beide Datenbanken erfolgreich ausgeglichen werden und somit die Funktion des Synchronisationsalgorithmus bewiesen werden.
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \begin{center}
+    \includegraphics[width=1.0\linewidth]{bilder/BarDBDiff.png}
+  \end{center}
+ \caption{Versandte Synchronisationspakete pro Synchronisationszyklus}
+  \label{fig:EmptyDBTraffic}
+\end{wrapfigure}
+ Ähnlich wie im vorherigen Test, \autoref{ssec:EmptyDBTest} ist ein Anstieg der benötigten Synchronisationsnachrichten mit der Anzahl der eingefügten Datensätze deutlich erkennbar. Zudem ist ersichtlich dass auch mit dem Grad des Unterschiedes der Datenbanken der Bedarf an Sznchronisationsnachrichten pro sznchrozyklus stark korreliert. vergleich selbe diff mit emptz db test kleiner!
+ vergleich operationen
 
 \section{Dynamische Tests}
-\subsection{Zell Replikation unter Last}
+\subsection{Zellreplikation unter Last}
 \subsection{Bestimmen der benötigten Synchronisationsresourcen im laufenden Betrieb}
+Anders als in den vorherigen statischen Tests soll hier nun der Synchronisationalgorithmus während lauf endendem Betrieb getestet und analysiert werden. Dazu wird das Datenbanksystem zunähst mit ... Werten initialisiert. Um die Last auf dem System zu simulieren werden in Intervallen je ... Dantensätze verändert und ... Neue hinzugefügt. Jedoch besteht eine Warscheinlichkeit von 1, 10, 50 Prozent dass Nachrichten im laufendem Betrieb verloren gehen. Somit tritt eine immer weiter wachsende Ungleichheit der Datenbankreplikationen auf. In diesem Test soll nun ermittelt werden wie viel Synchronisationsnachrichtenverkehr benötigt wird um den Unterschied der Datenbankzellen unter einer Grenze von 10, 5 , 1 Prozent zu halten. Während des Tests werden zunächst die Replikate verändert. Danach läuft der Synchronisationsprozess zwischen den Datenbanken. Dabei wird die Anzahl der versandten Synchronisationsnachrichten gezählt. Wird eine sich während der Synchronisation verändernde Schranke erreicht wird die Synchrisation beendet. Nun wird der Unterschied zwischen den Datenbanken bestimmt . So lässt sich bestimmen wie 
+Dieses als Intervall susammengefasste Folge wird mit sich veränderden Werten Wieder
+gegebenen Größen 100, ...
+1000 TPS mit fehlerrate in prozent
+wieviel traffic noetig damit Fehlerrate unter schranke bleibt
+gesucht Verhältnis
 sync ops frequency		
-%---------------------------------------------------------------------------------------------------------------------------------------------------		
+%---------------------------------------------------------------------------------------------------------------------------------------------------	entzuendung schlimmer	-> kann abens finger nur eingeschränk bewegen, schmerzen in der hand, medikamente schlagen auf den magen, 
 \chapter{Fazit und Ausblick alias Ergebnis}
 \todo[inline]{Zusammenfassung, Bewertung der Ergebnisse, Vergleich mit der Zielstellung, Ausblick}
 
-- spannende basisumsetzung mit viel potenzial da erste hindernisse ueberwunden viel moeglichkeiten der optimierung\\
+- spannende basisumsetzung mit viel potenzial da erste hindernisse ueberwunden viel moeglichkeiten der optimierung\\ steckt noch in den kinderschuhen aber grundlegende idee spannend
 - komplexitaets berechnung vs annahme des brutforcealgo -> spannend waeren "delta vs brutforce perfomance test"\\
 - optimize Synchro bigger deltas, abkuerzungen optimierung\\
 
 die anzahl der synchronisationen selbst regulierender algorithmus -> check ob er im Baum vorwaerts nach rechts kommt und beschleinigung\\
+
+XOR problem Ersatz durch hash verfahren
+
+Anwendungsfall Erstellen eines neuen Replikats/ Datenbankknoten neustart
+Auf den ersten Blick scheint hier ein komplettes Kopieren aller Datensätze sinnvoller da dabei nur \enquote{n * Datensatzgröße} übertragen werden muss. Jedoch verpasst das zu aktualisierende Datenbankreplikat alle neuen Änderungen. Ein, nach erfolgreichem Kopieren der Daten, Aktualisieren der verpassten Änderungen, mittels \enquote{ReDo-Log} oder dem Synchronisationsalgorithmus dieser belegt erneut Resourcen. In dem in \autoref{ssec:EmptyDBTest} beschriebenen Test wird mit in dieser Arbeit beschriebenen Synchronisationsalgorithmus der leere Datenbankknoten synchronisiert. Dabei steigt die Masse an ausgetauschten Daten auf \enquote{n * (Datensatzgröße + Synchronisationsnachrichten pro Synchronisationszyklus)}. Jedoch können Aktualisierungen direkt mit in das neue Replika eingepflegt werden. Der Synchronisationsalgorithmus erkennt dass diese vorhanden sind. Ein Übertragen von alten Versionen eines Datensatzes wird damit verhindert und die für deren Übertragung benötigten Resourcen gespart. Spannend hier wäre es herauszufinden ab welchem Grad von neuen Aktualisierungen die sofort übernommen werden können das Ersparnis an Resourcen den Überteagunsoverhead der vielen kleinen Synchronisationsnachrichten ausgleicht oder gar eine bessere Performance erreicht werden kann. 
+
+Vergleich mit anderem Algorithmus wie tree compare
 \newpage
 \listoftodos[Notes]
 
